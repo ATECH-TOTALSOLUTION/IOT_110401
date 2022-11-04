@@ -1,0 +1,13 @@
+configName: sam_c21n_xpro
+folderName: ''
+format_version: v1.0
+frameworkPath: ../../../..
+processor: ATSAMC21E18A
+projectName: ''
+settings:
+  PackageFilter: bsp;core;core_apps_sam_c20_c21;csp;csp_apps_sam_c20_c21;dev_packs;gfx;gfx_apps_sam_c20_c21;harmony-services;mc_apps_sam_c2x;motor_control;quick_docs;touch;usb;usb_apps_device;usb_apps_dual_role;usb_apps_host;usb_apps_multi_controller;x2c
+  FORCE_OPTIMIZATION: 'false'
+  GENERATE_BACKUP: 'true'
+  CMSISPath: .\dev_packs\arm\CMSIS\5.8.0
+  MERGE_STRATEGY: USER_ALL
+  DFPPath: .\dev_packs\Microchip\SAMC21_DFP\3.8.119\samc21\atdf\ATSAMC21E18A.atdf

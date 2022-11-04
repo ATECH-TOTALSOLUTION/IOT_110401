@@ -1,0 +1,415 @@
+format_version: v1.0
+type: UniqueComponent
+attributes: {id: can0}
+children:
+- type: Symbols
+  children:
+  - type: Integer
+    attributes: {id: CALCULATED_NOMINAL_BITRATE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '250'}
+  - type: String
+    attributes: {id: CALCULATED_NOMINAL_ERRORRATE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '0.000'}
+  - type: Menu
+    attributes: {id: CAN0_EXT_FILTER1}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER1_EFID1}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '418455535'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER1_EFID2}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '536870911'}
+  - type: KeyValueSet
+    attributes: {id: CAN0_EXT_FILTER1_TYPE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Menu
+    attributes: {id: CAN0_EXT_FILTER2}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER2_EFID1}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '418455791'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER2_EFID2}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '536870911'}
+  - type: KeyValueSet
+    attributes: {id: CAN0_EXT_FILTER2_TYPE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Menu
+    attributes: {id: CAN0_EXT_FILTER3}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER3_EFID1}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '418460143'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER3_EFID2}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '536870911'}
+  - type: KeyValueSet
+    attributes: {id: CAN0_EXT_FILTER3_TYPE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Menu
+    attributes: {id: CAN0_EXT_FILTER4}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER4_EFID1}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '217121488'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER4_EFID2}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '536870911'}
+  - type: KeyValueSet
+    attributes: {id: CAN0_EXT_FILTER4_TYPE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Menu
+    attributes: {id: CAN0_EXT_FILTER5}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER5_EFID1}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '418464495'}
+  - type: Hex
+    attributes: {id: CAN0_EXT_FILTER5_EFID2}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '536870911'}
+  - type: KeyValueSet
+    attributes: {id: CAN0_EXT_FILTER5_TYPE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Menu
+    attributes: {id: CAN0_STD_FILTER1}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: enabled}
+        children:
+        - {type: Value, value: 'true'}
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'true'}
+  - type: KeyValueSet
+    attributes: {id: CAN0_STD_FILTER1_CONFIG}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2'}
+  - type: Hex
+    attributes: {id: CAN0_STD_FILTER1_SFID1}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2000'}
+  - type: Hex
+    attributes: {id: CAN0_STD_FILTER1_SFID2}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '2015'}
+  - type: Integer
+    attributes: {id: CAN_CORE_CLOCK_FREQ}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '48000000'}
+  - type: Comment
+    attributes: {id: CAN_CORE_CLOCK_INVALID_COMMENT}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'false'}
+  - type: Boolean
+    attributes: {id: CAN_GENERATE_LEGACY_APIS}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
+  - type: Comment
+    attributes: {id: CAN_NOMINAL_ERRORRATE_COMMENT}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: text}
+        children:
+        - {type: Value, value: Warning!!! Error 2.674%}
+  - type: Comment
+    attributes: {id: CAN_TIME_QUANTA_INVALID_COMMENT}
+    children:
+    - type: Attributes
+      children:
+      - type: Boolean
+        attributes: {id: visible}
+        children:
+        - {type: Value, value: 'false'}
+  - type: Integer
+    attributes: {id: FILTERS_EXT}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '5'}
+  - type: Integer
+    attributes: {id: FILTERS_STD}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '1'}
+  - type: Boolean
+    attributes: {id: INTERRUPT_MODE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: 'true'}
+  - type: Integer
+    attributes: {id: NBTP_NBRP}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '11'}
+  - type: Integer
+    attributes: {id: NBTP_NSJW}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '3'}
+      - type: User
+        attributes: {value: '11'}
+  - type: Integer
+    attributes: {id: NBTP_NTSEG1}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '12'}
+  - type: Integer
+    attributes: {id: NBTP_NTSEG2}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '3'}
+  - type: Integer
+    attributes: {id: NBTP_TOTAL_TIME_QUANTA}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '16'}
+  - type: Integer
+    attributes: {id: NOMINAL_BITRATE}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '250'}
+  - type: Float
+    attributes: {id: NOMINAL_SAMPLE_POINT}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '85.0'}
+  - type: String
+    attributes: {id: NOMINAL_TIME_QUANTA_PERIOD}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '250.000'}
+  - type: Integer
+    attributes: {id: RXF0_ELEMENTS}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '10'}
+  - type: Integer
+    attributes: {id: RXF0_WATERMARK}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '0'}
+  - type: Integer
+    attributes: {id: RXF1_ELEMENTS}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '10'}
+  - type: Integer
+    attributes: {id: RXF1_WATERMARK}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '0'}
+  - type: Integer
+    attributes: {id: TX_FIFO_ELEMENTS}
+    children:
+    - type: Values
+      children:
+      - type: User
+        attributes: {value: '5'}
+  - type: Integer
+    attributes: {id: TX_FIFO_WATERMARK}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: can0, value: '0'}
+  - type: File
+    attributes: {id: headerFile}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: source}
+        children:
+        - {type: Value, value: ../peripheral/can_u2003/templates/plib_can_common_legacy.h}
+  - type: File
+    attributes: {id: instHeaderFile}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: source}
+        children:
+        - {type: Value, value: ../peripheral/can_u2003/templates/plib_can_legacy.h.ftl}
+  - type: File
+    attributes: {id: sourceFile}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: source}
+        children:
+        - {type: Value, value: ../peripheral/can_u2003/templates/plib_can_legacy.c.ftl}
+- type: ElementPosition
+  attributes: {x: '190', y: '60', id: can0}
