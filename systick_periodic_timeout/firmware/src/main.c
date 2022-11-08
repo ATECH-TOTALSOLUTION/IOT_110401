@@ -55,6 +55,7 @@
 
 #include "canapp.h"
 #include "appuart.h"
+#include "app_uart_debug.h"
 #include "apptimer.h"
 #include "moden.h"
 #include "appiot.h"
@@ -91,6 +92,7 @@ int main ( void )
     init_moden();
     init_can();
     appurat_init();
+    appurat_debug_init();
     init_iot();
     emnueeprom_init();   
     
@@ -98,7 +100,7 @@ int main ( void )
     SYSTICK_TimerStart();
 
     while ( true )
-    {
+    {   
         /* Maintain state machines of all polled MPLAB Harmony modules. */
         //SYS_Tasks ( );
         
@@ -115,22 +117,13 @@ int main ( void )
         }
         */
         
-         {
-        uint8_t tmp=0x55;
-        //uint32_t test=0;
-    
-        SERCOM1_USART_Write(&tmp,1);
-        SYSTICK_DelayMs(10);
-        tmp = 0xAA;
-        SERCOM1_USART_Write(&tmp,1);
-        SYSTICK_DelayMs(10);
-        
-    }
+         
 
     /* Execution should not come here during normal operation */
 
+    
+    }
     return ( EXIT_FAILURE );
-}
 }
 /*
 int rtt_printf(const char *fmt,...) 

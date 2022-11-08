@@ -414,14 +414,14 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: 'true'}
+        attributes: {id: core, value: 'false'}
   - type: Integer
     attributes: {id: GCLK_ID_22_FREQ}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '48000000'}
+        attributes: {id: core, value: '0'}
   - type: Boolean
     attributes: {id: GCLK_ID_26_CHEN}
     children:
@@ -547,7 +547,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '0x2001e'}
+        attributes: {id: core, value: '0x2000e'}
   - type: Boolean
     attributes: {id: NVIC_-1_0_ENABLE}
     children:
@@ -610,21 +610,21 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: 'true'}
+        attributes: {id: core, value: 'false'}
   - type: String
     attributes: {id: NVIC_12_0_HANDLER}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: SERCOM3_USART_InterruptHandler}
+        attributes: {id: core, value: SERCOM3_Handler}
   - type: Boolean
     attributes: {id: NVIC_12_0_HANDLER_LOCK}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: 'true'}
+        attributes: {id: core, value: 'false'}
   - type: Boolean
     attributes: {id: NVIC_15_0_ENABLE}
     children:
@@ -701,7 +701,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: SERCOM0_SPI_InterruptHandler}
+        attributes: {id: core, value: SERCOM0_USART_InterruptHandler}
   - type: Boolean
     attributes: {id: NVIC_9_0_HANDLER_LOCK}
     children:
@@ -1324,7 +1324,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: SPI_MOSI}
+        attributes: {value: UART_TX_DEBUG}
   - type: String
     attributes: {id: PIN_5_FUNCTION_TYPE}
     children:
@@ -1352,7 +1352,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: SPI_CLK}
+        attributes: {value: UART_RX_DEBUG}
   - type: String
     attributes: {id: PIN_6_FUNCTION_TYPE}
     children:
@@ -1375,63 +1375,7 @@ children:
       - type: User
         attributes: {value: D}
   - type: String
-    attributes: {id: PIN_7_FUNCTION_NAME}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: SPI_MISO}
-  - type: String
-    attributes: {id: PIN_7_FUNCTION_TYPE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: SERCOM0_PAD2}
-  - type: String
-    attributes: {id: PIN_7_MODE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: ''}
-  - type: String
     attributes: {id: PIN_7_PERIPHERAL_FUNCTION}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: D}
-  - type: String
-    attributes: {id: PIN_8_DIR}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: Out}
-  - type: String
-    attributes: {id: PIN_8_FUNCTION_NAME}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: SPI_CS}
-  - type: String
-    attributes: {id: PIN_8_FUNCTION_TYPE}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: GPIO}
-  - type: String
-    attributes: {id: PIN_8_INEN}
-    children:
-    - type: Values
-      children:
-      - type: User
-        attributes: {value: ''}
-  - type: String
-    attributes: {id: PIN_8_MODE}
     children:
     - type: Values
       children:
@@ -1443,7 +1387,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: GPIO}
+        attributes: {value: ''}
   - type: Boolean
     attributes: {id: PORT_GROUP_0}
     children:
@@ -1457,7 +1401,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '0x808087'}
+        attributes: {id: core, value: '0x808007'}
   - type: String
     attributes: {id: PORT_GROUP_0_OUT}
     children:
@@ -1772,7 +1716,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '0x1'}
+        attributes: {id: core, value: '0x0'}
   - type: String
     attributes: {id: PORT_GROUP_0_PINCFG7}
     children:
@@ -1954,14 +1898,14 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: 'true'}
+        attributes: {id: core, value: 'false'}
   - type: Boolean
     attributes: {id: PORT_GROUP_0_PIN_7_USED}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: 'true'}
+        attributes: {id: core, value: 'false'}
   - type: Boolean
     attributes: {id: PORT_GROUP_0_PIN_8_USED}
     children:
@@ -2031,7 +1975,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '0x3'}
+        attributes: {id: core, value: '0x0'}
   - type: String
     attributes: {id: PORT_GROUP_0_PMUX4}
     children:
@@ -2108,7 +2052,7 @@ children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: sercom0, value: SERCOM0_SPI_InterruptHandler}
+        attributes: {id: sercom0, value: SERCOM0_USART_InterruptHandler}
   - type: Boolean
     attributes: {id: SERCOM0_INTERRUPT_HANDLER_LOCK}
     children:
@@ -2200,48 +2144,20 @@ children:
       children:
       - type: Dynamic
         attributes: {id: sercom2, value: 'true'}
-  - type: Boolean
-    attributes: {id: SERCOM3_CORE_CLOCK_ENABLE}
-    children:
-    - type: Values
-      children:
-      - type: Dynamic
-        attributes: {id: sercom3, value: 'true'}
   - type: Integer
     attributes: {id: SERCOM3_CORE_CLOCK_FREQUENCY}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: '48000000'}
-  - type: Boolean
-    attributes: {id: SERCOM3_INTERRUPT_ENABLE}
-    children:
-    - type: Values
-      children:
-      - type: Dynamic
-        attributes: {id: sercom3, value: 'true'}
+        attributes: {id: core, value: '0'}
   - type: Boolean
     attributes: {id: SERCOM3_INTERRUPT_ENABLE_UPDATE}
     children:
     - type: Values
       children:
       - type: Dynamic
-        attributes: {id: core, value: 'false'}
-  - type: String
-    attributes: {id: SERCOM3_INTERRUPT_HANDLER}
-    children:
-    - type: Values
-      children:
-      - type: Dynamic
-        attributes: {id: sercom3, value: SERCOM3_USART_InterruptHandler}
-  - type: Boolean
-    attributes: {id: SERCOM3_INTERRUPT_HANDLER_LOCK}
-    children:
-    - type: Values
-      children:
-      - type: Dynamic
-        attributes: {id: sercom3, value: 'true'}
+        attributes: {id: core, value: 'true'}
   - type: File
     attributes: {id: SYSTICK_FILE_0}
     children:
@@ -2417,6 +2333,22 @@ children:
       children:
       - type: User
         attributes: {value: 'true'}
+  - type: Setting
+    attributes: {id: XC32_HEAP}
+    children:
+    - type: Attributes
+      children:
+      - type: String
+        attributes: {id: value}
+        children:
+        - {type: Value, value: '1024'}
+  - type: Integer
+    attributes: {id: XC32_HEAP_SIZE}
+    children:
+    - type: Values
+      children:
+      - type: Dynamic
+        attributes: {id: core, value: '1024'}
   - type: Boolean
     attributes: {id: systickEnable}
     children:

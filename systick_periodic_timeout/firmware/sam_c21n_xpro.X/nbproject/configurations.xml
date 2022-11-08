@@ -12,6 +12,7 @@
         <itemPath>../src/apptimer.h</itemPath>
         <itemPath>../src/canapp.h</itemPath>
         <itemPath>../src/appuart.h</itemPath>
+        <itemPath>../src/app_uart_debug.h</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="config" projectFiles="true">
         <logicalFolder name="f1" displayName="sam_c21n_xpro" projectFiles="true">
@@ -19,10 +20,6 @@
             <logicalFolder name="f2" displayName="at24" projectFiles="true">
               <itemPath>../src/config/sam_c21n_xpro/driver/at24/drv_at24.h</itemPath>
               <itemPath>../src/config/sam_c21n_xpro/driver/at24/drv_at24_definitions.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f3" displayName="spi" projectFiles="true">
-              <itemPath>../src/config/sam_c21n_xpro/driver/spi/drv_spi.h</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/driver/spi/drv_spi_definitions.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f1" displayName="usart" projectFiles="true">
               <itemPath>../src/config/sam_c21n_xpro/driver/usart/drv_usart_definitions.h</itemPath>
@@ -75,14 +72,10 @@
                 <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/i2c_master/plib_sercom_i2c_master_common.h</itemPath>
                 <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/i2c_master/plib_sercom2_i2c_master.h</itemPath>
               </logicalFolder>
-              <logicalFolder name="f3" displayName="spi_master" projectFiles="true">
-                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom0_spi_master.h</itemPath>
-                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom_spi_master_common.h</itemPath>
-              </logicalFolder>
               <logicalFolder name="f1" displayName="usart" projectFiles="true">
                 <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom_usart_common.h</itemPath>
                 <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom1_usart.h</itemPath>
-                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom3_usart.h</itemPath>
+                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom0_usart.h</itemPath>
               </logicalFolder>
             </logicalFolder>
             <logicalFolder name="f6" displayName="systick" projectFiles="true">
@@ -93,9 +86,6 @@
             </logicalFolder>
           </logicalFolder>
           <logicalFolder name="f3" displayName="system" projectFiles="true">
-            <logicalFolder name="f4" displayName="console" projectFiles="true">
-              <itemPath>../src/config/sam_c21n_xpro/system/console/sys_console.h</itemPath>
-            </logicalFolder>
             <logicalFolder name="f2" displayName="debug" projectFiles="true">
               <itemPath>../src/config/sam_c21n_xpro/system/debug/sys_debug.h</itemPath>
             </logicalFolder>
@@ -240,7 +230,6 @@
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/core.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/dfp.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/drv_at24.yml</itemPath>
-        <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/drv_spi.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/drv_usart.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/eic.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/evsys.yml</itemPath>
@@ -252,10 +241,7 @@
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/sercom0.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/sercom1.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/sercom2.yml</itemPath>
-        <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/sercom3.yml</itemPath>
         <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/settings.yml</itemPath>
-        <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/sys_console.yml</itemPath>
-        <itemPath>../src/config/sam_c21n_xpro/sam_c21n_xpro.mhc/sys_debug.yml</itemPath>
       </logicalFolder>
       <itemPath>Makefile</itemPath>
       <itemPath>../src/config/sam_c21n_xpro/harmony-manifest-success.yml</itemPath>
@@ -280,6 +266,7 @@
         <itemPath>../src/appuart.c</itemPath>
         <itemPath>../src/appemueeprom.c</itemPath>
         <itemPath>../src/apptimer.c</itemPath>
+        <itemPath>../src/app_uart_debug.c</itemPath>
       </logicalFolder>
       <logicalFolder name="f1" displayName="config" projectFiles="true">
         <logicalFolder name="f1" displayName="sam_c21n_xpro" projectFiles="true">
@@ -287,10 +274,6 @@
             <logicalFolder name="f2" displayName="at24" projectFiles="true">
               <itemPath>../src/config/sam_c21n_xpro/driver/at24/src/drv_at24.c</itemPath>
               <itemPath>../src/config/sam_c21n_xpro/driver/at24/src/drv_at24_local.h</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f3" displayName="spi" projectFiles="true">
-              <itemPath>../src/config/sam_c21n_xpro/driver/spi/src/drv_spi.c</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/driver/spi/src/drv_spi_local.h</itemPath>
             </logicalFolder>
             <logicalFolder name="f1" displayName="usart" projectFiles="true">
               <itemPath>../src/config/sam_c21n_xpro/driver/usart/src/drv_usart.c</itemPath>
@@ -331,12 +314,9 @@
               <logicalFolder name="f2" displayName="i2c_master" projectFiles="true">
                 <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/i2c_master/plib_sercom2_i2c_master.c</itemPath>
               </logicalFolder>
-              <logicalFolder name="f3" displayName="spi_master" projectFiles="true">
-                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom0_spi_master.c</itemPath>
-              </logicalFolder>
               <logicalFolder name="f1" displayName="usart" projectFiles="true">
                 <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom1_usart.c</itemPath>
-                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom3_usart.c</itemPath>
+                <itemPath>../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom0_usart.c</itemPath>
               </logicalFolder>
             </logicalFolder>
             <logicalFolder name="f6" displayName="systick" projectFiles="true">
@@ -350,17 +330,6 @@
             <itemPath>../src/config/sam_c21n_xpro/stdio/xc32_monitor.c</itemPath>
           </logicalFolder>
           <logicalFolder name="f4" displayName="system" projectFiles="true">
-            <logicalFolder name="f3" displayName="console" projectFiles="true">
-              <itemPath>../src/config/sam_c21n_xpro/system/console/src/sys_console.c</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/system/console/src/sys_console_local.h</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/system/console/src/sys_console_uart.h</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/system/console/src/sys_console_uart_definitions.h</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/system/console/src/sys_console_uart.c</itemPath>
-            </logicalFolder>
-            <logicalFolder name="f2" displayName="debug" projectFiles="true">
-              <itemPath>../src/config/sam_c21n_xpro/system/debug/src/sys_debug_local.h</itemPath>
-              <itemPath>../src/config/sam_c21n_xpro/system/debug/src/sys_debug.c</itemPath>
-            </logicalFolder>
             <logicalFolder name="f1" displayName="int" projectFiles="true">
               <itemPath>../src/config/sam_c21n_xpro/system/int/src/sys_int.c</itemPath>
             </logicalFolder>
@@ -500,7 +469,7 @@
         <property key="generate-16-bit-code" value="false"/>
         <property key="generate-cross-reference-file" value="false"/>
         <property key="generate-micro-compressed-code" value="false"/>
-        <property key="heap-size" value="512"/>
+        <property key="heap-size" value="1024"/>
         <property key="input-libraries" value=""/>
         <property key="kseg-length" value=""/>
         <property key="kseg-origin" value=""/>

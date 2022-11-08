@@ -5,6 +5,8 @@
 #include "moden.h"
 #include "appiot.h"
 #include "apptimer.h"
+#include "appuart.h"
+#include "app_uart_debug.h"
 
 #define AT_MODULE_CONNECT_TIMEOUT_MS                          3000  //3sec
 #define AT_4GLTE_link_chk_TIMEOUT_MS                          3000  //3sec
@@ -20,6 +22,7 @@ uint32_t commandtimeouttimer;
 uint16_t _moden_command;
 MODEN_COMMAND_DATA _moden_cmd_data;
 MODEN_DATA _moden;
+char buffer[100];
 MODEN_STATES readmodenstatue(void){
   
     return  (_moden.state);
@@ -38,6 +41,7 @@ void init_moden(void){
     _moden_cmd_data.RespondCommand =_NONE_AT_CMD;
     _moden_cmd_data.state = COMMAND_NONE;
     
+    _moden.AT_state = _NONE_AT_CMD;
 }
 
 void setldoon(void){
@@ -57,6 +61,26 @@ void resetiot(void){
 }
 void moden_main(void){
     if(_moden.state== moden_closed) return;
+    
+    //if((readmcahinestates()==disconnect) && (_moden_cmd_data.state == COMMAND_NONE)){
+    if((_moden_cmd_data.state == COMMAND_NONE)){
+        
+        switch(_moden.AT_state){
+                    
+            case  _NONE_AT_CMD:
+                _moden.AT_state = _AT1_CMD;
+                break;
+        
+            case _AT_MODULE_CONNECT_FINISH:
+                __NOP();
+                break;    
+            
+            default:
+                break;
+        }
+    }
+    
+    /*
     if(readmcahinestates()==disconnect && readmcahinestates()==none){
             _moden_cmd_data.state = COMMAND_SENDING;
             _moden_cmd_data.CommandTumeoutTimer = platform_get_time_ms();
@@ -72,12 +96,13 @@ void moden_main(void){
     else{
         
     }
+    */
     
-    
+    if(_moden.state!= moden_closed)
+        SendATCOmmand();
 }
 
 void SendATCOmmand(void){
-    static char buffer[100];
     static uint32_t at_module_connect_tick,at_4GLTE_link_chk_tick,at_NETWORK_STATUS_tick,at_RELOG_IN_tick,
                     at_MQTT_BIDIR_AUTH_PARA_LOAD_tick,at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_tick,
                     at_MQTT_PARA_OPERATION_tick,at_4G_LTE_LOGIN_tick,at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick;
@@ -85,6 +110,11 @@ void SendATCOmmand(void){
                     at_RELOG_IN_state_bak,at_MQTT_BIDIR_AUTH_PARA_LOAD_state_bak,
                     at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_state_bak,at_MQTT_PARA_OPERATION_state_bak,
                     at_4G_LTE_LOGIN_state_bak,at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak;
+    
+    #ifdef AT_UART_DEBUG_ON
+        char tmp[256];
+    #endif
+
     switch(_moden.AT_state){
         case _NONE_AT_CMD:
             break;
@@ -98,6 +128,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_MODULE_CONNECT_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_module_connect_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t *)buffer, strlen(buffer));
+            #endif
             break;
         case _ATE0_CMD:
             sprintf(buffer,"ATE0\r\n");
@@ -106,6 +140,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_MODULE_CONNECT_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_module_connect_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;   
         case _AT_CLCK1_CMD:
             sprintf(buffer,"AT+CLCK=\"SC\",2\r\n");
@@ -114,6 +152,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_MODULE_CONNECT_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_module_connect_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;  
         case _AT_CPIN1_CMD:
             sprintf(buffer,"AT+CPIN?\r\n");
@@ -122,6 +164,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_MODULE_CONNECT_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_module_connect_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;  
         case _AT_COPS1_CMD:
             sprintf(buffer,"AT+COPS?\r\n");
@@ -130,6 +176,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_MODULE_CONNECT_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_module_connect_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;  
         case _AT_CSQ1_CMD:
             sprintf(buffer,"AT+CSQ\r\n");
@@ -138,6 +188,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_MODULE_CONNECT_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_module_connect_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;  
         case _AT_MODULE_CONNECT_SENDING:
             
@@ -148,16 +202,34 @@ void SendATCOmmand(void){
             else if(_moden_cmd_data.state == COMMAND_ERROR){
                 _moden.AT_state = _AT_MODULE_CONNECT_ERROR;
                 //_moden_cmd_data.state = COMMAND_NONE;
-            }                
+            }
             //timeout
             else if((timer1ms-at_module_connect_tick)>AT_MODULE_CONNECT_TIMEOUT_MS){
                 
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MODULE_CONNECT  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t *)platformrxbuffer,strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;
         case _AT_MODULE_CONNECT_OK:            
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_module_connect_state_bak != _AT_CSQ1_CMD)
                 _moden.AT_state = at_module_connect_state_bak+1;
             else
@@ -165,13 +237,28 @@ void SendATCOmmand(void){
             
             _moden_cmd_data.state = COMMAND_NONE;
             break;
-        case _AT_MODULE_CONNECT_ERROR:
+        case _AT_MODULE_CONNECT_ERROR:            
             
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MODULE_CONNECT  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif            
+
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             break;
-        case _AT_MODULE_CONNECT_FINISH:
             
             
+        case _AT_MODULE_CONNECT_FINISH:            
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
+            _moden_cmd_data.state = COMMAND_NONE;            
             break;   
         //////////////////////////////////////////////////////////////////////////
         //////////////////////////////////////////////////////////////////////////
@@ -182,6 +269,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4GLTE_link_chk_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4GLTE_link_chk_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_CEREG1_CMD:
             sprintf(buffer,"AT+CEREG?\r\n");
@@ -190,6 +281,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4GLTE_link_chk_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4GLTE_link_chk_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case  _AT_CGDCONT1_CMD:
             sprintf(buffer,"AT+CGDCONT?\r\n");
@@ -198,6 +293,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4GLTE_link_chk_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4GLTE_link_chk_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case  _AT_CCLK_CMD:
             sprintf(buffer,"AT+CCLK?\r\n");
@@ -206,6 +305,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4GLTE_link_chk_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4GLTE_link_chk_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
             
         case _AT_4GLTE_link_chk_SENDING:            
@@ -223,9 +326,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_4GLTE_link_chk  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;            
-        case _AT_4GLTE_link_chk_OK:            
+        case _AT_4GLTE_link_chk_OK:           
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_4GLTE_link_chk_state_bak != _AT_CCLK_CMD)
                 _moden.AT_state = at_4GLTE_link_chk_state_bak+1;
             else
@@ -235,10 +356,25 @@ void SendATCOmmand(void){
             break;
         case _AT_4GLTE_link_chk_ERROR:
             
+            
+            
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_4GLTE_link_chk  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
+               
             break;    
         case _AT_4GLTE_link_chk_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             
             break;       
         ////////////////////////////////////////////////////////////////////////
@@ -250,6 +386,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_NETWORK_STATUS_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_NETWORK_STATUS_tick = timer1ms;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_CSQ2_CMD:
             sprintf(buffer,"AT+CSQ\r\n");
@@ -257,7 +397,11 @@ void SendATCOmmand(void){
             at_NETWORK_STATUS_state_bak = _AT_CSQ2_CMD;
             _moden.AT_state = _AT_NETWORK_STATUS_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_NETWORK_STATUS_tick = timer1ms;           
+            at_NETWORK_STATUS_tick = timer1ms;      
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_CEREG2_CMD:
             sprintf(buffer,"AT+CEREG?\r\n");
@@ -265,7 +409,11 @@ void SendATCOmmand(void){
             at_NETWORK_STATUS_state_bak = _AT_CEREG2_CMD;
             _moden.AT_state = _AT_NETWORK_STATUS_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_NETWORK_STATUS_tick = timer1ms;           
+            at_NETWORK_STATUS_tick = timer1ms;     
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_NETWORK_STATUS_SENDING:
             
@@ -283,9 +431,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_NETWORK_STATUS  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;
-        case _AT_NETWORK_STATUS_OK:            
+        case _AT_NETWORK_STATUS_OK:        
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_NETWORK_STATUS_state_bak != _AT_CEREG2_CMD)
                 _moden.AT_state = at_NETWORK_STATUS_state_bak+1;
             else
@@ -296,9 +462,21 @@ void SendATCOmmand(void){
         case _AT_NETWORK_STATUS_ERROR:
             
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_NETWORK_STATUS  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
             break;    
         case _AT_NETWORK_STATUS_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             
             break;            
         ////////////////////////////////////////////////////////////////////////
@@ -310,6 +488,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_RELOG_IN_tick = timer1ms;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;  
         case _AT_CPIN2_CMD:
             sprintf(buffer,"AT+CPIN?\r\n");
@@ -318,6 +500,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_RELOG_IN_tick = timer1ms;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;  
         case _AT_COPS3_CMD:
             sprintf(buffer,"AT+COPS?\r\n");
@@ -326,6 +512,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_RELOG_IN_tick = timer1ms;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_CSQ3_CMD:
             sprintf(buffer,"AT+CSQ\r\n");
@@ -333,7 +523,11 @@ void SendATCOmmand(void){
             at_RELOG_IN_state_bak = _AT_CSQ3_CMD;
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_RELOG_IN_tick = timer1ms;           
+            at_RELOG_IN_tick = timer1ms;      
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_CEREG3_CMD:
             sprintf(buffer,"AT+CEREG?\r\n");
@@ -341,7 +535,11 @@ void SendATCOmmand(void){
             at_RELOG_IN_state_bak = _AT_CEREG3_CMD;
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_RELOG_IN_tick = timer1ms;           
+            at_RELOG_IN_tick = timer1ms;       
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UPSD1_CMD:
             sprintf(buffer,"AT+UPSD=0,0,0\r\n");
@@ -349,7 +547,11 @@ void SendATCOmmand(void){
             at_RELOG_IN_state_bak = _AT_UPSD1_CMD;
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_RELOG_IN_tick = timer1ms;           
+            at_RELOG_IN_tick = timer1ms;       
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UPSDA1_CMD:
             sprintf(buffer,"AT+UPSDA=0,3\r\n");
@@ -357,7 +559,11 @@ void SendATCOmmand(void){
             at_RELOG_IN_state_bak = _AT_UPSDA1_CMD;
             _moden.AT_state = _AT_RELOG_IN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_RELOG_IN_tick = timer1ms;           
+            at_RELOG_IN_tick = timer1ms;      
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_RELOG_IN_SENDING:
             
@@ -375,9 +581,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_RELOG_IN  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;
         case _AT_RELOG_IN_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_RELOG_IN_state_bak != _AT_UPSDA1_CMD)
                 _moden.AT_state = at_RELOG_IN_state_bak+1;
             else
@@ -388,10 +612,24 @@ void SendATCOmmand(void){
             break;
         case _AT_RELOG_IN_ERROR:
             
+            
+            
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_RELOG_IN  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
             break;    
         case _AT_RELOG_IN_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             
             break;          
         ////////////////////////////////////////////////////////////////////////
@@ -400,24 +638,43 @@ void SendATCOmmand(void){
             sprintf(buffer,"AT+USECMNG=0,0,\"pcbca\",1359\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));  
             _moden.AT_state++;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_USECMNG2:
             sprintf(buffer,"AT+USECMNG=0,1,\"pcbcc\",1257\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));    
             _moden.AT_state++;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_USECMNG3:
             sprintf(buffer,"AT+USECMNG=0,2,\"pcbpk\",1675\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_USECMNG4:
             sprintf(buffer,"AT+USECMNG=3\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));  
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_KEY_UPLOAD_FINISH;
+            
+             #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_MQTT_BIDIR_AUTH_KEY_UPLOAD_FINISH:
             
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
             
             break;
         ////////////////////////////////////////////////////////////////////////
@@ -426,46 +683,82 @@ void SendATCOmmand(void){
             sprintf(buffer,"AT+UMQTT=0,\"pcbuuid\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT2_CMD:
             sprintf(buffer,"AT+UMQTT=2,\"shareapp.stonetech.com.tw\",8883\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT3_CMD:
             sprintf(buffer,"AT+UMQTT=3,\"xxx.xxx.xxx.xxx\",8883\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT4_CMD:
             sprintf(buffer,"AT+UMQTT=6,1\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT5_CMD:
             sprintf(buffer,"AT+UMQTT=7,1\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT6_CMD:
             sprintf(buffer,"AT+UMQTT=8,\"EMOTO/DEV/pcbuuid/UP\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT7_CMD:
             sprintf(buffer,"AT+UMQTT=9,\"Unrequested disconnect\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT8_CMD:
             sprintf(buffer,"AT+UMQTT=10,3600,20\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT9_CMD:
             sprintf(buffer,"AT+UMQTT=11,1,2\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTTC1_CMD:
             sprintf(buffer,"AT+UMQTTC=1\r\n");
@@ -473,7 +766,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_PARA_LOAD_state_bak = _AT_UMQTTC1_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_PARA_LOAD_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_PARA_LOAD_tick = timer1ms;           
+            at_MQTT_BIDIR_AUTH_PARA_LOAD_tick = timer1ms;   
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_MQTT_BIDIR_AUTH_PARA_LOAD_SENDING:
             
@@ -491,9 +788,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_BIDIR_AUTH_PARA_LOAD  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;
         case _AT_MQTT_BIDIR_AUTH_PARA_LOAD_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_MQTT_BIDIR_AUTH_PARA_LOAD_state_bak != _AT_UMQTTC1_CMD)
                 _moden.AT_state = at_MQTT_BIDIR_AUTH_PARA_LOAD_state_bak+1;
             else
@@ -504,10 +819,25 @@ void SendATCOmmand(void){
             break;
         case _AT_MQTT_BIDIR_AUTH_PARA_LOAD_ERROR:
             
+            
+            
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_BIDIR_AUTH_PARA_LOAD  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
+            
             break;    
         case _AT_MQTT_BIDIR_AUTH_PARA_LOAD_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             
             break;        
         ////////////////////////////////////////////////////////////////////////
@@ -516,56 +846,100 @@ void SendATCOmmand(void){
             sprintf(buffer,"AT+UMQTT=0,\"pcbuuid\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT11_CMD:
             sprintf(buffer,"AT+UMQTT=1,1883\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT12_CMD:
             sprintf(buffer,"AT+UMQTT=2,\"shareapp.stonetech.com.tw\",1883\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT13_CMD:
             sprintf(buffer,"AT+UMQTT=3,\"xxx.xxx.xxx.xxx\",8883\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT14_CMD:
             sprintf(buffer,"AT+UMQTT=4,\"test\",\"mqtt123\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT15_CMD:
             sprintf(buffer,"AT+UMQTT=6,1\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT16_CMD:
             sprintf(buffer,"AT+UMQTT=7,1\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT17_CMD:
             sprintf(buffer,"AT+UMQTT=8,\"EMOTO/DEV/pcbuuid/UP\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT18_CMD:
             sprintf(buffer,"AT+UMQTT=9,\"Unrequested disconnect\"\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT19_CMD:
             sprintf(buffer,"AT+UMQTT=10,3600,20\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTT20_CMD:
             sprintf(buffer,"AT+UMQTT=11,0\r\n");
             SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));   
             _moden.AT_state++;
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTTNV1_CMD:
             sprintf(buffer,"AT+UMQTTNV=2\r\n");
@@ -573,7 +947,11 @@ void SendATCOmmand(void){
             at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_state_bak = _AT_UMQTTNV1_CMD;
             _moden.AT_state = _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_tick = timer1ms;               
+            at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_tick = timer1ms;  
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTTC2_CMD:
             sprintf(buffer,"AT+UMQTTC=1\r\n");
@@ -581,7 +959,11 @@ void SendATCOmmand(void){
             at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_state_bak = _AT_UMQTTC2_CMD;
             _moden.AT_state = _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_tick = timer1ms;             
+            at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_tick = timer1ms;      
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_SENDING:
             
@@ -599,9 +981,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;
         case _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_state_bak != _AT_UMQTTC2_CMD)
                 _moden.AT_state = at_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_state_bak+1;
             else
@@ -613,9 +1013,21 @@ void SendATCOmmand(void){
         case _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_ERROR:
             
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
             break;    
         case _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));            
             
             break;        
         ////////////////////////////////////////////////////////////////////////
@@ -626,7 +1038,11 @@ void SendATCOmmand(void){
             at_MQTT_PARA_OPERATION_state_bak = _AT_UMQTTNV2_CMD;
             _moden.AT_state = _AT_MQTT_PARA_OPERATION_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_PARA_OPERATION_tick = timer1ms;               
+            at_MQTT_PARA_OPERATION_tick = timer1ms;   
+
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTTNV3_CMD:    
             sprintf(buffer,"AT+UMQTTNV=1\r\n");
@@ -634,7 +1050,11 @@ void SendATCOmmand(void){
             at_MQTT_PARA_OPERATION_state_bak = _AT_UMQTTNV3_CMD;
             _moden.AT_state = _AT_MQTT_PARA_OPERATION_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_PARA_OPERATION_tick = timer1ms;          
+            at_MQTT_PARA_OPERATION_tick = timer1ms;    
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_MQTT_PARA_OPERATION_SENDING:
             
@@ -652,9 +1072,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_PARA_OPERATION  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break; 
         case _AT_MQTT_PARA_OPERATION_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_MQTT_PARA_OPERATION_state_bak != _AT_UMQTTNV3_CMD)
                 _moden.AT_state = at_MQTT_PARA_OPERATION_state_bak+1;
             else
@@ -665,10 +1103,24 @@ void SendATCOmmand(void){
             break;
         case _AT_MQTT_PARA_OPERATION_ERROR:
             
+                        
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_PARA_OPERATION  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
+            
             break;    
         case _AT_MQTT_PARA_OPERATION_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             
             break;        
         ////////////////////////////////////////////////////////////////////////
@@ -680,6 +1132,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4G_LTE_LOGIN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4G_LTE_LOGIN_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UPSDA2_CMD:   
             sprintf(buffer,"AT+UPSDA=0,3\r\n");
@@ -688,6 +1144,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4G_LTE_LOGIN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4G_LTE_LOGIN_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;    
         case _AT_CGDCONT2_CMD:
             sprintf(buffer,"AT+CGDCONT?\r\n");
@@ -696,6 +1156,10 @@ void SendATCOmmand(void){
             _moden.AT_state = _AT_4G_LTE_LOGIN_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
             at_4G_LTE_LOGIN_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;              
         case _AT_4G_LTE_LOGIN_SENDING:
             
@@ -713,9 +1177,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_4G_LTE_LOGIN  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break; 
         case _AT_4G_LTE_LOGIN_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_4G_LTE_LOGIN_state_bak != _AT_UPSDA2_CMD)
                 _moden.AT_state = at_4G_LTE_LOGIN_state_bak+1;
             else
@@ -726,10 +1208,24 @@ void SendATCOmmand(void){
             break;
         case _AT_4G_LTE_LOGIN_ERROR:
             
+            
+            
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_4G_LTE_LOGIN  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
             break;    
         case _AT_4G_LTE_LOGIN_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             
             break;        
             
@@ -741,7 +1237,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_UPSD3_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;   
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UPSDA3_CMD:   
             sprintf(buffer,"AT+UPSDA=0,3\r\n");
@@ -749,7 +1249,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_UPSDA3_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;     
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;    
         case _AT_CGDCONT3_CMD:
             sprintf(buffer,"AT+CGDCONT?\r\n");
@@ -757,7 +1261,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_CGDCONT3_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;         
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;     
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;         
         case _AT_UMQTTNV4_CMD:
             sprintf(buffer,"AT+UMQTTNV=1\r\n");
@@ -765,7 +1273,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_UMQTTNV4_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;         
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;            
         case _AT_USECPRF1_CMD:
             sprintf(buffer,"AT+USECPRF=2,0,1\r\n");
@@ -773,7 +1285,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_USECPRF1_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;         
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;       
         case _AT_USECPRF2_CMD:
             sprintf(buffer,"AT+USECPRF=2,3,\"pcbca\"\r\n");
@@ -781,7 +1297,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_USECPRF2_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;         
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;              
         case _AT_USECPRF3_CMD:
             sprintf(buffer,"AT+USECPRF=2,5,\"pcbcc\"\r\n");
@@ -789,7 +1309,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_USECPRF3_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;         
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;              
         case _AT_USECPRF4_CMD:
             sprintf(buffer,"AT+USECPRF=2,6,\"pcbpk\"\r\n");
@@ -797,7 +1321,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_USECPRF4_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;         
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;              
         case _AT_UMQTTC3_CMD:
             sprintf(buffer,"AT+UMQTTC=1\r\n");
@@ -805,7 +1333,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_UMQTTC3_CMD;
             _moden.AT_state = _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;                
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;        
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_UMQTTC4_CMD:
             sprintf(buffer,"AT+UMQTTC=0\r\n");
@@ -813,7 +1345,11 @@ void SendATCOmmand(void){
             at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak = _AT_UMQTTC4_CMD;
             _moden.AT_state = _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_SENDING;
             _moden_cmd_data.state = COMMAND_SENDING;
-            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;             
+            at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
             break;
         case _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING:
             
@@ -831,9 +1367,27 @@ void SendATCOmmand(void){
                 
                 
                 _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_BIDIR_AUTH_LOGIN_FLOW  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             }                
             break;
         case _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
             if(at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak != _AT_UMQTTC4_CMD)
                 _moden.AT_state = at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak+1;
             else
@@ -841,13 +1395,26 @@ void SendATCOmmand(void){
             
             _moden_cmd_data.state = COMMAND_NONE;
             
-            break;
+            break;            
         case _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_ERROR:
             
+                        
             _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_MQTT_BIDIR_AUTH_LOGIN_FLOW  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
             break;    
         case _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_FINISH:
             
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));            
             
             break;        
         ////////////////////////////////////////////////////////////////////////

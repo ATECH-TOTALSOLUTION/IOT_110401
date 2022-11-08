@@ -79,70 +79,50 @@
 // Section: Driver Initialization Data
 // *****************************************************************************
 // *****************************************************************************
-// <editor-fold defaultstate="collapsed" desc="DRV_SPI Instance 0 Initialization Data">
+// <editor-fold defaultstate="collapsed" desc="DRV_USART Instance 1 Initialization Data">
 
-/* SPI Client Objects Pool */
-static DRV_SPI_CLIENT_OBJ drvSPI0ClientObjPool[DRV_SPI_CLIENTS_NUMBER_IDX0];
+static DRV_USART_CLIENT_OBJ drvUSART1ClientObjPool[DRV_USART_CLIENTS_NUMBER_IDX1];
 
-/* SPI Transfer Objects Pool */
-static DRV_SPI_TRANSFER_OBJ drvSPI0TransferObjPool[DRV_SPI_QUEUE_SIZE_IDX0];
 
-/* SPI PLIB Interface Initialization */
-const DRV_SPI_PLIB_INTERFACE drvSPI0PlibAPI = {
-
-    /* SPI PLIB Setup */
-    .setup = (DRV_SPI_PLIB_SETUP)SERCOM0_SPI_TransferSetup,
-
-    /* SPI PLIB WriteRead function */
-    .writeRead = (DRV_SPI_PLIB_WRITE_READ)SERCOM0_SPI_WriteRead,
-
-    /* SPI PLIB Transfer Status function */
-    .isTransmitterBusy = (DRV_SPI_PLIB_TRANSMITTER_IS_BUSY)SERCOM0_SPI_IsTransmitterBusy,
-
-    /* SPI PLIB Callback Register */
-    .callbackRegister = (DRV_SPI_PLIB_CALLBACK_REGISTER)SERCOM0_SPI_CallbackRegister,
+const DRV_USART_PLIB_INTERFACE drvUsart1PlibAPI = {
+    .readCallbackRegister = (DRV_USART_PLIB_READ_CALLBACK_REG)SERCOM0_USART_ReadCallbackRegister,
+    .read = (DRV_USART_PLIB_READ)SERCOM0_USART_Read,
+    //.readIsBusy = (DRV_USART_PLIB_READ_IS_BUSY)SERCOM0_USART_ReadIsBusy,
+    .readCountGet = (DRV_USART_PLIB_READ_COUNT_GET)SERCOM0_USART_ReadCountGet,
+    //.readAbort = (DRV_USART_PLIB_READ_ABORT)SERCOM0_USART_ReadAbort,
+    .writeCallbackRegister = (DRV_USART_PLIB_WRITE_CALLBACK_REG)SERCOM0_USART_WriteCallbackRegister,
+    .write = (DRV_USART_PLIB_WRITE)SERCOM0_USART_Write,
+    //.writeIsBusy = (DRV_USART_PLIB_WRITE_IS_BUSY)SERCOM0_USART_WriteIsBusy,
+    .writeCountGet = (DRV_USART_PLIB_WRITE_COUNT_GET)SERCOM0_USART_WriteCountGet,
+    .errorGet = (DRV_USART_PLIB_ERROR_GET)SERCOM0_USART_ErrorGet,
+    .serialSetup = (DRV_USART_PLIB_SERIAL_SETUP)SERCOM0_USART_SerialSetup
 };
 
-const uint32_t drvSPI0remapDataBits[]= { 0x0, 0x1, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
-const uint32_t drvSPI0remapClockPolarity[] = { 0x0, 0x20000000 };
-const uint32_t drvSPI0remapClockPhase[] = { 0x10000000, 0x0 };
+const uint32_t drvUsart1remapDataWidth[] = { 0x5, 0x6, 0x7, 0x0, 0x1 };
+const uint32_t drvUsart1remapParity[] = { 0x2, 0x0, 0x80000, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF };
+const uint32_t drvUsart1remapStopBits[] = { 0x0, 0xFFFFFFFF, 0x40 };
+const uint32_t drvUsart1remapError[] = { 0x4, 0x0, 0x2 };
 
-const DRV_SPI_INTERRUPT_SOURCES drvSPI0InterruptSources =
+const DRV_USART_INIT drvUsart1InitData =
 {
-    /* Peripheral has single interrupt vector */
-    .isSingleIntSrc                        = true,
+    .usartPlib = &drvUsart1PlibAPI,
 
-    /* Peripheral interrupt line */
-    .intSources.spiInterrupt             = SERCOM0_IRQn,
-};
+    /* USART Number of clients */
+    .numClients = DRV_USART_CLIENTS_NUMBER_IDX1,
 
-/* SPI Driver Initialization Data */
-const DRV_SPI_INIT drvSPI0InitData =
-{
-    /* SPI PLIB API */
-    .spiPlib = &drvSPI0PlibAPI,
-
-    .remapDataBits = drvSPI0remapDataBits,
-
-    .remapClockPolarity = drvSPI0remapClockPolarity,
-
-    .remapClockPhase = drvSPI0remapClockPhase,
-
-    /* SPI Number of clients */
-    .numClients = DRV_SPI_CLIENTS_NUMBER_IDX0,
-
-    /* SPI Client Objects Pool */
-    .clientObjPool = (uintptr_t)&drvSPI0ClientObjPool[0],
+    /* USART Client Objects Pool */
+    .clientObjPool = (uintptr_t)&drvUSART1ClientObjPool[0],
 
 
-    /* SPI Queue Size */
-    .transferObjPoolSize = DRV_SPI_QUEUE_SIZE_IDX0,
+    .remapDataWidth = drvUsart1remapDataWidth,
 
-    /* SPI Transfer Objects Pool */
-    .transferObjPool = (uintptr_t)&drvSPI0TransferObjPool[0],
+    .remapParity = drvUsart1remapParity,
 
-    /* SPI interrupt sources (SPI peripheral and DMA) */
-    .interruptSources = &drvSPI0InterruptSources,
+    .remapStopBits = drvUsart1remapStopBits,
+
+    .remapError = drvUsart1remapError,
+
+    .dataWidth = DRV_USART_DATA_8_BIT,
 };
 
 // </editor-fold>
@@ -262,47 +242,6 @@ SYSTEM_OBJECTS sysObj;
 // *****************************************************************************
 // *****************************************************************************
 
-const SYS_DEBUG_INIT debugInit =
-{
-    .moduleInit = {0},
-    .errorLevel = SYS_DEBUG_GLOBAL_ERROR_LEVEL,
-    .consoleIndex = 0,
-};
-
-
-// <editor-fold defaultstate="collapsed" desc="SYS_CONSOLE Instance 0 Initialization Data">
-
-
-/* Declared in console device implementation (sys_console_uart.c) */
-extern const SYS_CONSOLE_DEV_DESC sysConsoleUARTDevDesc;
-
-const SYS_CONSOLE_UART_PLIB_INTERFACE sysConsole0UARTPlibAPI =
-{
-    .read = (SYS_CONSOLE_UART_PLIB_READ)SERCOM3_USART_Read,
-	.readCountGet = (SYS_CONSOLE_UART_PLIB_READ_COUNT_GET)SERCOM3_USART_ReadCountGet,
-	.readFreeBufferCountGet = (SYS_CONSOLE_UART_PLIB_READ_FREE_BUFFFER_COUNT_GET)SERCOM3_USART_ReadFreeBufferCountGet,
-    .write = (SYS_CONSOLE_UART_PLIB_WRITE)SERCOM3_USART_Write,
-	.writeCountGet = (SYS_CONSOLE_UART_PLIB_WRITE_COUNT_GET)SERCOM3_USART_WriteCountGet,
-	.writeFreeBufferCountGet = (SYS_CONSOLE_UART_PLIB_WRITE_FREE_BUFFER_COUNT_GET)SERCOM3_USART_WriteFreeBufferCountGet,
-};
-
-const SYS_CONSOLE_UART_INIT_DATA sysConsole0UARTInitData =
-{
-    .uartPLIB = &sysConsole0UARTPlibAPI,    
-};
-
-const SYS_CONSOLE_INIT sysConsole0Init =
-{
-    .deviceInitData = (const void*)&sysConsole0UARTInitData,
-    .consDevDesc = &sysConsoleUARTDevDesc,
-    .deviceIndex = 0,
-};
-
-
-
-// </editor-fold>
-
-
 
 
 // *****************************************************************************
@@ -338,8 +277,6 @@ void SYS_Initialize ( void* data )
 
 
 
-    SERCOM3_USART_Initialize();
-
     NVMCTRL_Initialize( );
 
     SERCOM2_I2C_Initialize();
@@ -348,7 +285,7 @@ void SYS_Initialize ( void* data )
 
     EVSYS_Initialize();
 
-    SERCOM0_SPI_Initialize();
+    SERCOM0_USART_Initialize();
 
 	SYSTICK_TimerInitialize();
     CAN0_Initialize();
@@ -358,19 +295,14 @@ void SYS_Initialize ( void* data )
 
     ADC0_Initialize();
 
-    /* Initialize SPI0 Driver Instance */
-    sysObj.drvSPI0 = DRV_SPI_Initialize(DRV_SPI_INDEX_0, (SYS_MODULE_INIT *)&drvSPI0InitData);
+    sysObj.drvUsart1 = DRV_USART_Initialize(DRV_USART_INDEX_1, (SYS_MODULE_INIT *)&drvUsart1InitData);
+
     sysObj.drvUsart0 = DRV_USART_Initialize(DRV_USART_INDEX_0, (SYS_MODULE_INIT *)&drvUsart0InitData);
 
     sysObj.drvAT24 = DRV_AT24_Initialize(DRV_AT24_INDEX, (SYS_MODULE_INIT *)&drvAT24InitData);
 
     /* Initialize EMULATED_EEPROM0 Library Instance */
     sysObj.libEMULATED_EEPROM0 = EMU_EEPROM_Initialize(EMULATED_EEPROM0, (SYS_MODULE_INIT *)NULL);
-
-    sysObj.sysDebug = SYS_DEBUG_Initialize(SYS_DEBUG_INDEX_0, (SYS_MODULE_INIT*)&debugInit);
-
-
-    sysObj.sysConsole0 = SYS_CONSOLE_Initialize(SYS_CONSOLE_INDEX_0, (SYS_MODULE_INIT *)&sysConsole0Init);
 
 
 

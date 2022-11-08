@@ -96,26 +96,13 @@
 #define AD1_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 3U)) & 0x01U)
 #define AD1_PIN                  PORT_PIN_PA03
 
-/*** Macros for SPI_MOSI pin ***/
-#define SPI_MOSI_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 4U)) & 0x01U)
-#define SPI_MOSI_PIN                  PORT_PIN_PA04
+/*** Macros for UART_TX_DEBUG pin ***/
+#define UART_TX_DEBUG_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 4U)) & 0x01U)
+#define UART_TX_DEBUG_PIN                  PORT_PIN_PA04
 
-/*** Macros for SPI_CLK pin ***/
-#define SPI_CLK_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 5U)) & 0x01U)
-#define SPI_CLK_PIN                  PORT_PIN_PA05
-
-/*** Macros for SPI_MISO pin ***/
-#define SPI_MISO_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 6U)) & 0x01U)
-#define SPI_MISO_PIN                  PORT_PIN_PA06
-
-/*** Macros for SPI_CS pin ***/
-#define SPI_CS_Set()               (PORT_REGS->GROUP[0].PORT_OUTSET = ((uint32_t)1U << 7U))
-#define SPI_CS_Clear()             (PORT_REGS->GROUP[0].PORT_OUTCLR = ((uint32_t)1U << 7U))
-#define SPI_CS_Toggle()            (PORT_REGS->GROUP[0].PORT_OUTTGL = ((uint32_t)1U << 7U))
-#define SPI_CS_OutputEnable()      (PORT_REGS->GROUP[0].PORT_DIRSET = ((uint32_t)1U << 7U))
-#define SPI_CS_InputEnable()       (PORT_REGS->GROUP[0].PORT_DIRCLR = ((uint32_t)1U << 7U))
-#define SPI_CS_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 7U)) & 0x01U)
-#define SPI_CS_PIN                  PORT_PIN_PA07
+/*** Macros for UART_RX_DEBUG pin ***/
+#define UART_RX_DEBUG_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 5U)) & 0x01U)
+#define UART_RX_DEBUG_PIN                  PORT_PIN_PA05
 
 /*** Macros for IIC_DATA pin ***/
 #define IIC_DATA_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 8U)) & 0x01U)

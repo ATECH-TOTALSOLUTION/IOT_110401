@@ -158,6 +158,7 @@ typedef struct
 
 } MODEN_DATA;
 extern MODEN_DATA _moden;
+extern char buffer[100];
 MODEN_STATES readmodenstatue(void);
 void setmoden(MODEN_STATES );
 void init_moden(void);

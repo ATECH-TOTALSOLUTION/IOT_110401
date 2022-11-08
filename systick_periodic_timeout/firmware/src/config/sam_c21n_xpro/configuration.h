@@ -80,41 +80,22 @@ extern "C" {
 // *****************************************************************************
 // *****************************************************************************
 
-#define SYS_DEBUG_ENABLE
-#define SYS_DEBUG_GLOBAL_ERROR_LEVEL       SYS_ERROR_DEBUG
-#define SYS_DEBUG_BUFFER_DMA_READY
-#define SYS_DEBUG_USE_CONSOLE
-
-
-#define SYS_CONSOLE_DEVICE_MAX_INSTANCES   			1
-#define SYS_CONSOLE_UART_MAX_INSTANCES 	   			1
-#define SYS_CONSOLE_USB_CDC_MAX_INSTANCES 	   		0
-#define SYS_CONSOLE_PRINT_BUFFER_SIZE        		200
-
-
-#define SYS_CONSOLE_INDEX_0                       0
-
-
-
-
-
 
 // *****************************************************************************
 // *****************************************************************************
 // Section: Driver Configuration
 // *****************************************************************************
 // *****************************************************************************
-/* SPI Driver Instance 0 Configuration Options */
-#define DRV_SPI_INDEX_0                       0
-#define DRV_SPI_CLIENTS_NUMBER_IDX0           1
-#define DRV_SPI_QUEUE_SIZE_IDX0               4
+/* USART Driver Instance 1 Configuration Options */
+#define DRV_USART_INDEX_1                  1
+#define DRV_USART_CLIENTS_NUMBER_IDX1      1
 
 /* USART Driver Instance 0 Configuration Options */
 #define DRV_USART_INDEX_0                  0
 #define DRV_USART_CLIENTS_NUMBER_IDX0      1
 
 /* USART Driver Global Configuration Options */
-#define DRV_USART_INSTANCES_NUMBER         1
+#define DRV_USART_INSTANCES_NUMBER         2
 /* AT24 Driver Configuration Options */
 
 
@@ -127,9 +108,6 @@ extern "C" {
 #define DRV_AT24_WRITE_BUFFER_SIZE             18
 /* Emulated EEPROM library instance 0 Configuration Options */
 #define EMULATED_EEPROM0                       0
-
-/* SPI Driver Common Configuration Options */
-#define DRV_SPI_INSTANCES_NUMBER              1
 
 
 

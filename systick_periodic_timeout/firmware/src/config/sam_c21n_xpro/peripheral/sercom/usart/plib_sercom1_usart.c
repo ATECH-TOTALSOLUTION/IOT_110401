@@ -127,15 +127,15 @@ void SERCOM1_USART_Initialize( void )
     sercom1USARTObj.rdCallback = NULL;
     sercom1USARTObj.rdInIndex = 0U;
     sercom1USARTObj.rdOutIndex = 0U;
-    sercom1USARTObj.isRdNotificationEnabled = false;
-    sercom1USARTObj.isRdNotifyPersistently = false;
+    sercom1USARTObj.isRdNotificationEnabled = true;
+    sercom1USARTObj.isRdNotifyPersistently = true;
     sercom1USARTObj.rdThreshold = 0U;
     sercom1USARTObj.errorStatus = USART_ERROR_NONE;
     sercom1USARTObj.wrCallback = NULL;
     sercom1USARTObj.wrInIndex = 0U;
     sercom1USARTObj.wrOutIndex = 0U;
-    sercom1USARTObj.isWrNotificationEnabled = false;
-    sercom1USARTObj.isWrNotifyPersistently = false;
+    sercom1USARTObj.isWrNotificationEnabled = true;
+    sercom1USARTObj.isWrNotifyPersistently = true;
     sercom1USARTObj.wrThreshold = 0U;
     if (((SERCOM1_REGS->USART_INT.SERCOM_CTRLB & SERCOM_USART_INT_CTRLB_CHSIZE_Msk) >> SERCOM_USART_INT_CTRLB_CHSIZE_Pos) != 0x01U)
     {

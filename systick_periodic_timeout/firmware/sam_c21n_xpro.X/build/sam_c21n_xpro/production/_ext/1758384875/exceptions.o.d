@@ -88,16 +88,14 @@ build/sam_c21n_xpro/production/_ext/1758384875/exceptions.o: \
  ../src/packs/CMSIS/CMSIS/Core/Include/cmsis_compiler.h \
  ../src/config/sam_c21n_xpro/interrupts.h \
  ../src/config/sam_c21n_xpro/definitions.h \
- ../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom3_usart.h \
- ../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom_usart_common.h \
- ../src/config/sam_c21n_xpro/device.h \
  ../src/config/sam_c21n_xpro/peripheral/nvmctrl/plib_nvmctrl.h \
+ ../src/config/sam_c21n_xpro/device.h \
  ../src/config/sam_c21n_xpro/peripheral/sercom/i2c_master/plib_sercom2_i2c_master.h \
  ../src/config/sam_c21n_xpro/peripheral/sercom/i2c_master/plib_sercom_i2c_master_common.h \
  ../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom1_usart.h \
+ ../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom_usart_common.h \
  ../src/config/sam_c21n_xpro/peripheral/evsys/plib_evsys.h \
- ../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom0_spi_master.h \
- ../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom_spi_master_common.h \
+ ../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom0_usart.h \
  ../src/config/sam_c21n_xpro/peripheral/port/plib_port.h \
  ../src/config/sam_c21n_xpro/peripheral/clock/plib_clock.h \
  ../src/config/sam_c21n_xpro/peripheral/nvic/plib_nvic.h \
@@ -127,23 +125,14 @@ build/sam_c21n_xpro/production/_ext/1758384875/exceptions.o: \
  ../src/config/sam_c21n_xpro/driver/at24/drv_at24.h \
  ../src/config/sam_c21n_xpro/driver/at24/drv_at24_definitions.h \
  ../src/config/sam_c21n_xpro/driver/at24/src/drv_at24_local.h \
- ../src/config/sam_c21n_xpro/system/console/sys_console.h \
- ../src/config/sam_c21n_xpro/system/console/src/sys_console_local.h \
- ../src/config/sam_c21n_xpro/system/console/src/sys_console_uart_definitions.h \
  ../src/config/sam_c21n_xpro/library/emulated_eeprom/emulated_eeprom.h \
  ../src/config/sam_c21n_xpro/library/emulated_eeprom/emulated_eeprom_definitions.h \
- ../src/config/sam_c21n_xpro/driver/spi/drv_spi.h \
- ../src/config/sam_c21n_xpro/driver/spi/drv_spi_definitions.h \
+ ../src/config/sam_c21n_xpro/system/int/sys_int.h \
  ../src/config/sam_c21n_xpro/system/ports/sys_ports.h \
  ../src/config/sam_c21n_xpro/system/ports/sys_ports_mapping.h \
  ../src/config/sam_c21n_xpro/peripheral/port/plib_port.h \
- ../src/config/sam_c21n_xpro/driver/spi/src/drv_spi_local.h \
- ../src/config/sam_c21n_xpro/driver/spi/drv_spi.h \
- ../src/config/sam_c21n_xpro/system/int/sys_int.h \
- ../src/config/sam_c21n_xpro/system/ports/sys_ports.h \
  ../src/config/sam_c21n_xpro/osal/osal.h \
- ../src/config/sam_c21n_xpro/system/debug/sys_debug.h \
- ../src/config/sam_c21n_xpro/system/console/sys_console.h ../src/app.h
+ ../src/config/sam_c21n_xpro/system/debug/sys_debug.h ../src/app.h
 
 ../src/config/sam_c21n_xpro/configuration.h:
 
@@ -323,13 +312,9 @@ build/sam_c21n_xpro/production/_ext/1758384875/exceptions.o: \
 
 ../src/config/sam_c21n_xpro/definitions.h:
 
-../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom3_usart.h:
-
-../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom_usart_common.h:
+../src/config/sam_c21n_xpro/peripheral/nvmctrl/plib_nvmctrl.h:
 
 ../src/config/sam_c21n_xpro/device.h:
-
-../src/config/sam_c21n_xpro/peripheral/nvmctrl/plib_nvmctrl.h:
 
 ../src/config/sam_c21n_xpro/peripheral/sercom/i2c_master/plib_sercom2_i2c_master.h:
 
@@ -337,11 +322,11 @@ build/sam_c21n_xpro/production/_ext/1758384875/exceptions.o: \
 
 ../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom1_usart.h:
 
+../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom_usart_common.h:
+
 ../src/config/sam_c21n_xpro/peripheral/evsys/plib_evsys.h:
 
-../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom0_spi_master.h:
-
-../src/config/sam_c21n_xpro/peripheral/sercom/spi_master/plib_sercom_spi_master_common.h:
+../src/config/sam_c21n_xpro/peripheral/sercom/usart/plib_sercom0_usart.h:
 
 ../src/config/sam_c21n_xpro/peripheral/port/plib_port.h:
 
@@ -401,19 +386,11 @@ build/sam_c21n_xpro/production/_ext/1758384875/exceptions.o: \
 
 ../src/config/sam_c21n_xpro/driver/at24/src/drv_at24_local.h:
 
-../src/config/sam_c21n_xpro/system/console/sys_console.h:
-
-../src/config/sam_c21n_xpro/system/console/src/sys_console_local.h:
-
-../src/config/sam_c21n_xpro/system/console/src/sys_console_uart_definitions.h:
-
 ../src/config/sam_c21n_xpro/library/emulated_eeprom/emulated_eeprom.h:
 
 ../src/config/sam_c21n_xpro/library/emulated_eeprom/emulated_eeprom_definitions.h:
 
-../src/config/sam_c21n_xpro/driver/spi/drv_spi.h:
-
-../src/config/sam_c21n_xpro/driver/spi/drv_spi_definitions.h:
+../src/config/sam_c21n_xpro/system/int/sys_int.h:
 
 ../src/config/sam_c21n_xpro/system/ports/sys_ports.h:
 
@@ -421,18 +398,8 @@ build/sam_c21n_xpro/production/_ext/1758384875/exceptions.o: \
 
 ../src/config/sam_c21n_xpro/peripheral/port/plib_port.h:
 
-../src/config/sam_c21n_xpro/driver/spi/src/drv_spi_local.h:
-
-../src/config/sam_c21n_xpro/driver/spi/drv_spi.h:
-
-../src/config/sam_c21n_xpro/system/int/sys_int.h:
-
-../src/config/sam_c21n_xpro/system/ports/sys_ports.h:
-
 ../src/config/sam_c21n_xpro/osal/osal.h:
 
 ../src/config/sam_c21n_xpro/system/debug/sys_debug.h:
-
-../src/config/sam_c21n_xpro/system/console/sys_console.h:
 
 ../src/app.h:

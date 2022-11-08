@@ -20,20 +20,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 99D522F3AAFDF37032E05557E5617CF1
-- generatedChecksum: 94CE062641F8685165B1880867B81BD6
-  logicalPath: config/sam_c21n_xpro/driver/spi
-  name: drv_spi.c
-  physicalPath: driver/spi/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 94CE062641F8685165B1880867B81BD6
-- generatedChecksum: F8C01E395E9D90435EC9B0DA959700A7
-  logicalPath: config/sam_c21n_xpro/driver/spi
-  name: drv_spi_local.h
-  physicalPath: driver/spi/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: F8C01E395E9D90435EC9B0DA959700A7
 - generatedChecksum: 0B23DEE346C7C1B78CA5282EC4E29285
   logicalPath: config/sam_c21n_xpro/driver/usart
   name: drv_usart.c
@@ -62,20 +48,20 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 0D18A719A1E40A8875895284967F66D0
-- generatedChecksum: 190D057EF1CEF4A45B400870611A7888
+- generatedChecksum: 444BEE81A5B2EE6BB945377DB0C4AF52
   logicalPath: config/sam_c21n_xpro
   name: initialization.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 154D88A757BD36A27094C99EC5989B7D
-- generatedChecksum: 9C11E05222C7E0955523B62C30CC3755
+  userChecksum: BA0A172533573B508EF93CDC09721EBF
+- generatedChecksum: EE580354AE59E7B0EC8D6EA3E36742DD
   logicalPath: config/sam_c21n_xpro
   name: interrupts.c
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 9C11E05222C7E0955523B62C30CC3755
+  userChecksum: EE580354AE59E7B0EC8D6EA3E36742DD
 - generatedChecksum: 2CDCA8CDF135BDEB85FDFC0A2A991C0B
   logicalPath: config/sam_c21n_xpro
   name: libc_syscalls.c
@@ -104,13 +90,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 77053E94EDD8221110AD1F1DA184489F
-- generatedChecksum: B5B741DA3558B68719676F9F1853A24C
+- generatedChecksum: 9CC944540A0BAB9E9061FEF64453B930
   logicalPath: config/sam_c21n_xpro/peripheral/clock
   name: plib_clock.c
   physicalPath: peripheral/clock
   security: NON_SECURE
   type: SOURCE
-  userChecksum: B5B741DA3558B68719676F9F1853A24C
+  userChecksum: 9CC944540A0BAB9E9061FEF64453B930
 - generatedChecksum: BF25922FE6EA025807E7B3DC9015C6AD
   logicalPath: config/sam_c21n_xpro/peripheral/eic
   name: plib_eic.c
@@ -125,13 +111,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: C3ECDED3D6301DB0DE622293ED615D21
-- generatedChecksum: 136BDD1B041215A3A84324743FCE136B
+- generatedChecksum: 45123721D73C82673D09D4A5FC7B7DF8
   logicalPath: config/sam_c21n_xpro/peripheral/nvic
   name: plib_nvic.c
   physicalPath: peripheral/nvic
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 136BDD1B041215A3A84324743FCE136B
+  userChecksum: 45123721D73C82673D09D4A5FC7B7DF8
 - generatedChecksum: D4D6E4E50E443F793BFED0A79B849B6A
   logicalPath: config/sam_c21n_xpro/peripheral/nvmctrl
   name: plib_nvmctrl.c
@@ -139,27 +125,27 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: D4D6E4E50E443F793BFED0A79B849B6A
-- generatedChecksum: 1D4F91D9FDB0AA2FC4AD3506F00A1FE3
+- generatedChecksum: A18DFC7E1A1123F57A0FF5AD35D0C3A7
   logicalPath: config/sam_c21n_xpro/peripheral/port
   name: plib_port.c
   physicalPath: peripheral/port
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 1D4F91D9FDB0AA2FC4AD3506F00A1FE3
-- generatedChecksum: CDCBC8D164005E0142CF7162CC557D2B
-  logicalPath: config/sam_c21n_xpro/peripheral/sercom/spi_master
-  name: plib_sercom0_spi_master.c
-  physicalPath: peripheral/sercom/spi_master
+  userChecksum: A18DFC7E1A1123F57A0FF5AD35D0C3A7
+- generatedChecksum: 798C76954EABDCDB622CEF043761902D
+  logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
+  name: plib_sercom0_usart.c
+  physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: CDCBC8D164005E0142CF7162CC557D2B
+  userChecksum: 5255CE44694BC7315D01A1A41F7A7F87
 - generatedChecksum: A4BC9BAB87D5C4444ED816E35C12D1C9
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom1_usart.c
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: A4BC9BAB87D5C4444ED816E35C12D1C9
+  userChecksum: 007B8E108727A43102564702419BF4BA
 - generatedChecksum: 5EE81E3249BE17DE79A3EDF65609F0B9
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/i2c_master
   name: plib_sercom2_i2c_master.c
@@ -167,13 +153,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 5EE81E3249BE17DE79A3EDF65609F0B9
-- generatedChecksum: C25CCF59834D4658B1ADC96CD17F926C
-  logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
-  name: plib_sercom3_usart.c
-  physicalPath: peripheral/sercom/usart
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: C25CCF59834D4658B1ADC96CD17F926C
 - generatedChecksum: 62E6D757258985B4050CF09E3FBAE803
   logicalPath: config/sam_c21n_xpro/peripheral/systick
   name: plib_systick.c
@@ -195,55 +174,6 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 64C7B09EBF0E16AC27EFD31B52FDDDF8
-- generatedChecksum: 20C22A19D5DC74DEBFC4CCCA83B6F603
-  logicalPath: config/sam_c21n_xpro/system/console
-  name: sys_console.c
-  physicalPath: system/console/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 20C22A19D5DC74DEBFC4CCCA83B6F603
-- generatedChecksum: 5BA0902794A8669B3FE37E8A8BEE9D65
-  logicalPath: config/sam_c21n_xpro/system/console
-  name: sys_console_local.h
-  physicalPath: system/console/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 5BA0902794A8669B3FE37E8A8BEE9D65
-- generatedChecksum: CA5E9B63704372DE5FBC0BDC006B16C3
-  logicalPath: config/sam_c21n_xpro/system/console
-  name: sys_console_uart.c
-  physicalPath: system/console/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: CA5E9B63704372DE5FBC0BDC006B16C3
-- generatedChecksum: 767495C6A39617A915D8107093DC1A72
-  logicalPath: config/sam_c21n_xpro/system/console
-  name: sys_console_uart.h
-  physicalPath: system/console/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 767495C6A39617A915D8107093DC1A72
-- generatedChecksum: 5D10B9438117B64220180660AB022150
-  logicalPath: config/sam_c21n_xpro/system/console
-  name: sys_console_uart_definitions.h
-  physicalPath: system/console/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 5D10B9438117B64220180660AB022150
-- generatedChecksum: 68C0D499B9EDAA3BFD7E131A48514212
-  logicalPath: config/sam_c21n_xpro/system/debug
-  name: sys_debug.c
-  physicalPath: system/debug/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: 68C0D499B9EDAA3BFD7E131A48514212
-- generatedChecksum: B8C6C7356AC7841AECC7C779040F745C
-  logicalPath: config/sam_c21n_xpro/system/debug
-  name: sys_debug_local.h
-  physicalPath: system/debug/src
-  security: NON_SECURE
-  type: SOURCE
-  userChecksum: B8C6C7356AC7841AECC7C779040F745C
 - generatedChecksum: 02C3C1B519E59992810626BB6098CF56
   logicalPath: config/sam_c21n_xpro/system/int
   name: sys_int.c
@@ -398,13 +328,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 52F91AC0727F2311EDA0E3BAA7719A9F
-- generatedChecksum: AEBB7BC88F0F9F380473201D3A3836BE
+- generatedChecksum: 48F8F8A01F25714158024FC6689CB452
   logicalPath: config/sam_c21n_xpro
   name: configuration.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: AEBB7BC88F0F9F380473201D3A3836BE
+  userChecksum: 48F8F8A01F25714158024FC6689CB452
 - generatedChecksum: CCBD23918BE14943EA128B0D552031C5
   logicalPath: packs/CMSIS/CMSIS/Core/Include
   name: core_cm0plus.h
@@ -426,13 +356,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 961EBA81B5199F24F730AF5EA5785287
-- generatedChecksum: 7B0D39D2BE92B252F54AA7FCB5F0D5D9
+- generatedChecksum: F2C149289D1FFB7781A047FEADA23484
   logicalPath: config/sam_c21n_xpro
   name: definitions.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 7B0D39D2BE92B252F54AA7FCB5F0D5D9
+  userChecksum: F2C149289D1FFB7781A047FEADA23484
 - generatedChecksum: FC7C53EE83BBE75CC84F59A86CAF49D1
   logicalPath: config/sam_c21n_xpro
   name: device.h
@@ -510,20 +440,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 99C180836F8E45B3A9E30FB846B930CC
-- generatedChecksum: 9F75B6689BFA73CB5D96A71849B200F5
-  logicalPath: config/sam_c21n_xpro/driver/spi
-  name: drv_spi.h
-  physicalPath: driver/spi
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 9F75B6689BFA73CB5D96A71849B200F5
-- generatedChecksum: 05A15437D96080BB0A84D3102EB2137C
-  logicalPath: config/sam_c21n_xpro/driver/spi
-  name: drv_spi_definitions.h
-  physicalPath: driver/spi
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 05A15437D96080BB0A84D3102EB2137C
 - generatedChecksum: 32A69D3A36D95B996CA22CB89C5907DB
   logicalPath: config/sam_c21n_xpro/driver/usart
   name: drv_usart.h
@@ -657,13 +573,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 45B251D7FA7944D72E439447A6317B6A
-- generatedChecksum: 277240DE5119B512F980094B4140499A
+- generatedChecksum: DC3D97343CF0CD1CC4D816CF11BE45C4
   logicalPath: config/sam_c21n_xpro
   name: interrupts.h
   physicalPath: ''
   security: NON_SECURE
   type: HEADER
-  userChecksum: 277240DE5119B512F980094B4140499A
+  userChecksum: DC3D97343CF0CD1CC4D816CF11BE45C4
 - generatedChecksum: BDF8ADC63901228402264F7335B253F7
   logicalPath: packs/ATSAMC21E18A_DFP/component
   name: mclk.h
@@ -839,20 +755,20 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 61E9143D5D7C5573DC567E0474B23452
-- generatedChecksum: B6BB33DA0AA9F07E649A852EADE2E25D
+- generatedChecksum: 7112F724201A02D06628FA0A64BE8FDB
   logicalPath: config/sam_c21n_xpro/peripheral/port
   name: plib_port.h
   physicalPath: peripheral/port
   security: NON_SECURE
   type: HEADER
-  userChecksum: B6BB33DA0AA9F07E649A852EADE2E25D
-- generatedChecksum: 43D5751A89EACE9235B0F5CF945BFF88
-  logicalPath: config/sam_c21n_xpro/peripheral/sercom/spi_master
-  name: plib_sercom0_spi_master.h
-  physicalPath: peripheral/sercom/spi_master
+  userChecksum: 7112F724201A02D06628FA0A64BE8FDB
+- generatedChecksum: 206FB7E73E2D956689D908A299491A33
+  logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
+  name: plib_sercom0_usart.h
+  physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: HEADER
-  userChecksum: 43D5751A89EACE9235B0F5CF945BFF88
+  userChecksum: 206FB7E73E2D956689D908A299491A33
 - generatedChecksum: E2A70E7428D86E9538582BC1E00D1764
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom1_usart.h
@@ -867,13 +783,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 1B5B4B9D402B612B264AD6E60EA5D231
-- generatedChecksum: FB52EF0BAFB347EDACCCA5809F7246A3
-  logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
-  name: plib_sercom3_usart.h
-  physicalPath: peripheral/sercom/usart
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: FB52EF0BAFB347EDACCCA5809F7246A3
 - generatedChecksum: 555AC09B32F566FBFB0A0505CF73ABD6
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/i2c_master
   name: plib_sercom_i2c_master_common.h
@@ -881,13 +790,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 555AC09B32F566FBFB0A0505CF73ABD6
-- generatedChecksum: BED7AF34A8D633C6994B780C19D7157F
-  logicalPath: config/sam_c21n_xpro/peripheral/sercom/spi_master
-  name: plib_sercom_spi_master_common.h
-  physicalPath: peripheral/sercom/spi_master
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: BED7AF34A8D633C6994B780C19D7157F
 - generatedChecksum: 89D68FCEF2422C9008AB71DE144653CB
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom_usart_common.h
@@ -1070,13 +972,6 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 6BEEF7972D48DFAA9547485C63902EB4
-- generatedChecksum: 3AE819DFC5376F6E9AD0427596F24644
-  logicalPath: config/sam_c21n_xpro/system/console
-  name: sys_console.h
-  physicalPath: system/console
-  security: NON_SECURE
-  type: HEADER
-  userChecksum: 3AE819DFC5376F6E9AD0427596F24644
 - generatedChecksum: A16AB5B2D9FB7CE4684C82260B75C7C4
   logicalPath: config/sam_c21n_xpro/system/debug
   name: sys_debug.h
@@ -1252,13 +1147,13 @@ files:
   security: NON_SECURE
   type: LINKER
   userChecksum: 46A218D72FBCFD4D8A17275245F060BB
-- generatedChecksum: 933F85E28379CBC06C0A8ED29F9FB921
+- generatedChecksum: F3F9F10461A00AB1EDAB7C0AB0583423
   logicalPath: ''
   name: pin_configurations.csv
   physicalPath: ''
   security: NON_SECURE
   type: IMPORTANT
-  userChecksum: 933F85E28379CBC06C0A8ED29F9FB921
+  userChecksum: F3F9F10461A00AB1EDAB7C0AB0583423
 format_version: v1.0
 libraries: []
 settings:
@@ -1273,7 +1168,7 @@ settings:
   delimiter: ''
   key: heap-size
   security: NON_SECURE
-  value: '512'
+  value: '1024'
 - append: false
   category: C32-LD
   delimiter: ''

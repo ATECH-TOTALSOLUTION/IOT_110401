@@ -48,12 +48,11 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
-#include "peripheral/sercom/usart/plib_sercom3_usart.h"
 #include "peripheral/nvmctrl/plib_nvmctrl.h"
 #include "peripheral/sercom/i2c_master/plib_sercom2_i2c_master.h"
 #include "peripheral/sercom/usart/plib_sercom1_usart.h"
 #include "peripheral/evsys/plib_evsys.h"
-#include "peripheral/sercom/spi_master/plib_sercom0_spi_master.h"
+#include "peripheral/sercom/usart/plib_sercom0_usart.h"
 #include "peripheral/port/plib_port.h"
 #include "peripheral/clock/plib_clock.h"
 #include "peripheral/nvic/plib_nvic.h"
@@ -64,10 +63,7 @@
 #include "driver/usart/drv_usart.h"
 #include "peripheral/adc/plib_adc0.h"
 #include "driver/at24/drv_at24.h"
-#include "system/console/sys_console.h"
-#include "system/console/src/sys_console_uart_definitions.h"
 #include "library/emulated_eeprom/emulated_eeprom.h"
-#include "driver/spi/drv_spi.h"
 #include "system/int/sys_int.h"
 #include "system/ports/sys_ports.h"
 #include "osal/osal.h"
@@ -197,19 +193,13 @@ Remarks:
 
 typedef struct
 {
-    /* SPI0 Driver Object */
-    SYS_MODULE_OBJ drvSPI0;
-
-    SYS_MODULE_OBJ  sysDebug;
-
+    SYS_MODULE_OBJ  drvUsart1;
     SYS_MODULE_OBJ  drvUsart0;
     /* AT24 Driver Object */
     SYS_MODULE_OBJ drvAT24;
 
     /* libEMULATED_EEPROM0 library Object */
     SYS_MODULE_OBJ libEMULATED_EEPROM0;
-
-    SYS_MODULE_OBJ  sysConsole0;
 
 
 } SYSTEM_OBJECTS;

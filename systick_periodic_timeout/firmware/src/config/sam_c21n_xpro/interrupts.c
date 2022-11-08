@@ -76,7 +76,7 @@ void __attribute__((optimize("-O1"),section(".text.Dummy_Handler"),long_call, no
 }
 
 /* MISRAC 2012 deviation block start */
-/* MISRA C-2012 Rule 8.6 deviated 24 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
+/* MISRA C-2012 Rule 8.6 deviated 25 times.  Deviation record ID -  H3_MISRAC_2012_R_8_6_DR_1 */
 /* Device vectors list dummy definition*/
 extern void SVCall_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void PendSV_Handler             ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -88,6 +88,7 @@ extern void TSENS_Handler              ( void ) __attribute__((weak, alias("Dumm
 extern void NVMCTRL_Handler            ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void DMAC_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void EVSYS_Handler              ( void ) __attribute__((weak, alias("Dummy_Handler")));
+extern void SERCOM3_Handler            ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void TCC0_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void TCC1_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
 extern void TCC2_Handler               ( void ) __attribute__((weak, alias("Dummy_Handler")));
@@ -131,10 +132,10 @@ const H3DeviceVectors exception_table=
     .pfnNVMCTRL_Handler            = NVMCTRL_Handler,
     .pfnDMAC_Handler               = DMAC_Handler,
     .pfnEVSYS_Handler              = EVSYS_Handler,
-    .pfnSERCOM0_Handler            = SERCOM0_SPI_InterruptHandler,
+    .pfnSERCOM0_Handler            = SERCOM0_USART_InterruptHandler,
     .pfnSERCOM1_Handler            = SERCOM1_USART_InterruptHandler,
     .pfnSERCOM2_Handler            = SERCOM2_I2C_InterruptHandler,
-    .pfnSERCOM3_Handler            = SERCOM3_USART_InterruptHandler,
+    .pfnSERCOM3_Handler            = SERCOM3_Handler,
     .pfnCAN0_Handler               = CAN0_InterruptHandler,
     .pfnTCC0_Handler               = TCC0_Handler,
     .pfnTCC1_Handler               = TCC1_Handler,
