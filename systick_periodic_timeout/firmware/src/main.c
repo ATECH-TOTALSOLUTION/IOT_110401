@@ -65,6 +65,9 @@
 void timeout_handler(uintptr_t context)
 {
     timer_update();	
+    
+    //debug
+    //PORT_PinToggle(PORT_PIN_PA07);
 }
 
 void ClrWDT(void){

@@ -53,7 +53,8 @@ void usartWriteEventHandler(SERCOM_USART_EVENT event, uintptr_t context )
     count++;    
     if(count>=strlen(buffer)){
         count = 0;
-        //_moden_cmd_data.state = COMMAND_SENDING;
+        
+        _moden_cmd_data.state = COMMAND_SENDING;
     }   
 }
  

@@ -104,6 +104,15 @@
 #define UART_RX_DEBUG_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 5U)) & 0x01U)
 #define UART_RX_DEBUG_PIN                  PORT_PIN_PA05
 
+/*** Macros for GPIO_PA07 pin ***/
+#define GPIO_PA07_Set()               (PORT_REGS->GROUP[0].PORT_OUTSET = ((uint32_t)1U << 7U))
+#define GPIO_PA07_Clear()             (PORT_REGS->GROUP[0].PORT_OUTCLR = ((uint32_t)1U << 7U))
+#define GPIO_PA07_Toggle()            (PORT_REGS->GROUP[0].PORT_OUTTGL = ((uint32_t)1U << 7U))
+#define GPIO_PA07_OutputEnable()      (PORT_REGS->GROUP[0].PORT_DIRSET = ((uint32_t)1U << 7U))
+#define GPIO_PA07_InputEnable()       (PORT_REGS->GROUP[0].PORT_DIRCLR = ((uint32_t)1U << 7U))
+#define GPIO_PA07_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 7U)) & 0x01U)
+#define GPIO_PA07_PIN                  PORT_PIN_PA07
+
 /*** Macros for IIC_DATA pin ***/
 #define IIC_DATA_Get()               (((PORT_REGS->GROUP[0].PORT_IN >> 8U)) & 0x01U)
 #define IIC_DATA_PIN                  PORT_PIN_PA08

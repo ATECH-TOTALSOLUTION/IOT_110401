@@ -316,7 +316,6 @@ ssize_t SYS_CONSOLE_WriteCountGet(const SYS_CONSOLE_HANDLE handle)
 
 void SYS_CONSOLE_Print(const SYS_CONSOLE_HANDLE handle, const char *format, ...)
 {
-    
     size_t len = 0;
     va_list args = {0};
     SYS_CONSOLE_OBJECT_INSTANCE* pConsoleObj = SYS_CONSOLE_GET_INSTANCE(handle);
@@ -340,8 +339,8 @@ void SYS_CONSOLE_Print(const SYS_CONSOLE_HANDLE handle, const char *format, ...)
     /* Get the variable arguments in va_list */
     va_start( args, format );
 
-    //len = vsnprintf(consolePrintBuffer, SYS_CONSOLE_PRINT_BUFFER_SIZE, format, args);
-    
+    len = vsnprintf(consolePrintBuffer, SYS_CONSOLE_PRINT_BUFFER_SIZE, format, args);
+
     va_end( args );
 
     if ((len > 0) && (len < SYS_CONSOLE_PRINT_BUFFER_SIZE))

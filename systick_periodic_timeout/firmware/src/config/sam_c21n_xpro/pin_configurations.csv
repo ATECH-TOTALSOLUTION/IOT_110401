@@ -6,7 +6,7 @@
 5,PA04,UART_TX_DEBUG,SERCOM0_PAD0,Digital,High Impedance,n/a,No,No,NORMAL
 6,PA05,UART_RX_DEBUG,SERCOM0_PAD1,Digital,High Impedance,n/a,No,No,NORMAL
 7,PA06,,Available,,,,,,NORMAL
-8,PA07,,Available,,,,,,NORMAL
+8,PA07,GPIO_PA07,GPIO,Digital,Out,Low,,,NORMAL
 11,PA08,IIC_DATA,SERCOM2_PAD0,Digital,High Impedance,n/a,No,No,NORMAL
 12,PA09,IIC_CLK,SERCOM2_PAD1,Digital,High Impedance,n/a,No,No,NORMAL
 13,PA10,,Available,,,,,,NORMAL

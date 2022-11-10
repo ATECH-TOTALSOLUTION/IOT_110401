@@ -56,6 +56,7 @@ extern "C" {
 #define _AT_USECMNG2                                    (0x0501)
 #define _AT_USECMNG3                                    (0x0502)
 #define _AT_USECMNG4                                    (0x0503)
+#define _AT_MQTT_BIDIR_AUTH_KEY_UPLOAD_WAIT             (0x05FE)    
 #define _AT_MQTT_BIDIR_AUTH_KEY_UPLOAD_FINISH           (0x05FF)
 #define _AT_UMQTT1_CMD                                  (0x0600)
 #define _AT_UMQTT2_CMD                                  (0x0601)   
@@ -67,6 +68,7 @@ extern "C" {
 #define _AT_UMQTT8_CMD                                  (0x0607)
 #define _AT_UMQTT9_CMD                                  (0x0608)
 #define _AT_UMQTTC1_CMD                                 (0x0609)
+#define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_WAIT              (0x06FB)  
 #define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_SENDING           (0x06FC)
 #define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_OK                (0x06FD)
 #define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_ERROR             (0x06FE)
@@ -84,15 +86,14 @@ extern "C" {
 #define _AT_UMQTT20_CMD                                 (0x070A)
 #define _AT_UMQTTNV1_CMD                                (0x070B)
 #define _AT_UMQTTC2_CMD                                 (0x070C)
-#define _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_SENDING (0x07FC)
-#define _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_OK      (0x07FD)
-#define _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_ERROR   (0x07FE)
+#define _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_WAIT    (0x07FE) 
 #define _AT_MQTT_NO_AUTH_USERID_LOGIN_PARA_LOAD_FINISH  (0x07FF)  
 #define _AT_UMQTTNV2_CMD                                (0x0800)
 #define _AT_UMQTTNV3_CMD                                (0x0801)
-#define _AT_MQTT_PARA_OPERATION_SENDING                 (0x08FC)
+#define _AT_MQTT_PARA_OPERATION_WAIT                    (0x08FB)  
+#define _AT_MQTT_PARA_OPERATION_SENDING                 (0x08FC) 
 #define _AT_MQTT_PARA_OPERATION_OK                      (0x08FD)
-#define _AT_MQTT_PARA_OPERATION_ERROR                   (0x08FE)
+#define _AT_MQTT_PARA_OPERATION_ERROR                   (0x08FE) 
 #define _AT_MQTT_PARA_OPERATION_FINISH                  (0x08FF)  
 #define _AT_UPSD2_CMD                                   (0x0900)
 #define _AT_UPSDA2_CMD                                  (0x0901)
@@ -134,7 +135,7 @@ typedef enum
 } COMMAND_STATES;
 typedef struct
 {
-   COMMAND_STATES state;
+   volatile COMMAND_STATES state;
    uint16_t ModenCommand;
    uint16_t RespondCommand;
    uint32_t CommandTumeoutTimer;

@@ -54,7 +54,7 @@ files:
   physicalPath: ''
   security: NON_SECURE
   type: SOURCE
-  userChecksum: BA0A172533573B508EF93CDC09721EBF
+  userChecksum: 3F7E61B400330832BBB0E67C487ADB9D
 - generatedChecksum: EE580354AE59E7B0EC8D6EA3E36742DD
   logicalPath: config/sam_c21n_xpro
   name: interrupts.c
@@ -125,13 +125,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: D4D6E4E50E443F793BFED0A79B849B6A
-- generatedChecksum: A18DFC7E1A1123F57A0FF5AD35D0C3A7
+- generatedChecksum: 2A63A06250947D97CDA40DB7134FB7C6
   logicalPath: config/sam_c21n_xpro/peripheral/port
   name: plib_port.c
   physicalPath: peripheral/port
   security: NON_SECURE
   type: SOURCE
-  userChecksum: A18DFC7E1A1123F57A0FF5AD35D0C3A7
+  userChecksum: 2A63A06250947D97CDA40DB7134FB7C6
 - generatedChecksum: 798C76954EABDCDB622CEF043761902D
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom0_usart.c
@@ -755,13 +755,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 61E9143D5D7C5573DC567E0474B23452
-- generatedChecksum: 7112F724201A02D06628FA0A64BE8FDB
+- generatedChecksum: 4AC314A9EB9AA7EEF80F17EB421C018E
   logicalPath: config/sam_c21n_xpro/peripheral/port
   name: plib_port.h
   physicalPath: peripheral/port
   security: NON_SECURE
   type: HEADER
-  userChecksum: 7112F724201A02D06628FA0A64BE8FDB
+  userChecksum: 4AC314A9EB9AA7EEF80F17EB421C018E
 - generatedChecksum: 206FB7E73E2D956689D908A299491A33
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom0_usart.h
@@ -1147,13 +1147,13 @@ files:
   security: NON_SECURE
   type: LINKER
   userChecksum: 46A218D72FBCFD4D8A17275245F060BB
-- generatedChecksum: F3F9F10461A00AB1EDAB7C0AB0583423
+- generatedChecksum: 4683F69171B66F72B56DE5D300C6380D
   logicalPath: ''
   name: pin_configurations.csv
   physicalPath: ''
   security: NON_SECURE
   type: IMPORTANT
-  userChecksum: F3F9F10461A00AB1EDAB7C0AB0583423
+  userChecksum: 4683F69171B66F72B56DE5D300C6380D
 format_version: v1.0
 libraries: []
 settings:
