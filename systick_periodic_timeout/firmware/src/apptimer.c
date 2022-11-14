@@ -8,7 +8,7 @@
 #include "canapp.h"
 #define standbytime 3//3000mS
 TIMER_DATA _timer;  
-uint32_t timer1ms,timer10ms,timer100ms,timer1000ms;
+volatile uint32_t timer1ms=0,timer10ms=0,timer100ms=0,timer1000ms=0;
 uint32_t timermqttupload;
 void timer_update(void){
     timer1ms++;
@@ -31,7 +31,7 @@ void init_timer(void){
 void timer_main(void){
     if(_timer.state != timer_on){
         _timer.state = timer_on;
-        init_timer();
+        //init_timer();
         //SYSTICK_TimerCallbackSet(&timer_update, (uintptr_t)NULL);
     }
     else{

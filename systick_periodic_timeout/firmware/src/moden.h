@@ -11,6 +11,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
+#include "app.h"
 #ifdef	__cplusplus
 extern "C" {
 #endif
@@ -22,6 +23,7 @@ extern "C" {
 #define _AT_CPIN1_CMD                                   (0x0103)
 #define _AT_COPS1_CMD                                   (0x0104)
 #define _AT_CSQ1_CMD                                    (0x0105)
+#define _AT_RD_P0_CMD                                   (0x0106)
 #define _AT_MODULE_CONNECT_SENDING                      (0x01FC)
 #define _AT_MODULE_CONNECT_OK                           (0x01FD)
 #define _AT_MODULE_CONNECT_ERROR                        (0x01FE)
@@ -58,16 +60,18 @@ extern "C" {
 #define _AT_USECMNG4                                    (0x0503)
 #define _AT_MQTT_BIDIR_AUTH_KEY_UPLOAD_WAIT             (0x05FE)    
 #define _AT_MQTT_BIDIR_AUTH_KEY_UPLOAD_FINISH           (0x05FF)
-#define _AT_UMQTT1_CMD                                  (0x0600)
-#define _AT_UMQTT2_CMD                                  (0x0601)   
-#define _AT_UMQTT3_CMD                                  (0x0602)
-#define _AT_UMQTT4_CMD                                  (0x0603)
-#define _AT_UMQTT5_CMD                                  (0x0604)
-#define _AT_UMQTT6_CMD                                  (0x0605)
-#define _AT_UMQTT7_CMD                                  (0x0606) 
-#define _AT_UMQTT8_CMD                                  (0x0607)
-#define _AT_UMQTT9_CMD                                  (0x0608)
-#define _AT_UMQTTC1_CMD                                 (0x0609)
+#define _AT_RD_P01_CMD                                  (0x0600)
+#define _AT_UMQTT1_CMD                                  (0x0601)
+#define _AT_UMQTT2_CMD                                  (0x0602)   
+//#define _AT_UMQTT021_CMD                                (0x0602) 
+#define _AT_UMQTT3_CMD                                  (0x0603)
+#define _AT_UMQTT4_CMD                                  (0x0604)
+#define _AT_UMQTT5_CMD                                  (0x0605)
+#define _AT_UMQTT6_CMD                                  (0x0606)
+#define _AT_UMQTT7_CMD                                  (0x0607) 
+#define _AT_UMQTT8_CMD                                  (0x0608)
+#define _AT_UMQTT9_CMD                                  (0x0609)
+#define _AT_UMQTTC1_CMD                                 (0x060A)
 #define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_WAIT              (0x06FB)  
 #define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_SENDING           (0x06FC)
 #define _AT_MQTT_BIDIR_AUTH_PARA_LOAD_OK                (0x06FD)
@@ -104,22 +108,32 @@ extern "C" {
 #define _AT_4G_LTE_LOGIN_FINISH                         (0x09FF)  
 #define _AT_UPSD3_CMD                                   (0x0A00)
 #define _AT_UPSDA3_CMD                                  (0x0A01)
-#define _AT_CGDCONT3_CMD                                (0x0A02)
-#define _AT_UMQTTNV4_CMD                                (0x0A03)
-#define _AT_USECPRF1_CMD                                (0x0A04)
-#define _AT_USECPRF2_CMD                                (0x0A05)
-#define _AT_USECPRF3_CMD                                (0x0A06)
-#define _AT_USECPRF4_CMD                                (0x0A07)
-#define _AT_UMQTTC3_CMD                                 (0x0A08)
-#define _AT_UMQTTC4_CMD                                 (0x0A09)
+#define _AT_UMQTT022_CMD                                (0x0A02) 
+#define _AT_UMQTT091_CMD                                (0x0A03) 
+#define _AT_CGDCONT3_CMD                                (0x0A04)
+
+#define _AT_USECPRF1_CMD                                (0x0A05)
+#define _AT_USECPRF2_CMD                                (0x0A06)
+#define _AT_USECPRF3_CMD                                (0x0A07)
+#define _AT_USECPRF4_CMD                                (0x0A08)
+#define _AT_UMQTTNV4_CMD                                (0x0A09)
+#define _AT_UMQTTNV5_CMD                                (0x0A0A)
+//#define _AT_UMQTTNV5_CMD                                (0x0A08)
+//#define _AT_UMQTTNV6_CMD                                (0x0A09)    
+#define _AT_UMQTT21_CMD                                 (0x0A0B)
+    
+
+#define _AT_UMQTTC3_CMD                                 (0x0A0C)
+#define _AT_UMQTTC4_CMD                                 (0x0A0D)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING          (0x0AFC)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_OK               (0x0AFD)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_ERROR            (0x0AFE)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_FINISH           (0x0AFF)  
-    
-    
-    
-    
+#define _AT_MQTT_TX_UP_DATA1_CMD                        (0xB000)
+#define _AT_MQTT_TX_UP_DATA1_SENDING                    (0xB0FC)
+#define _AT_MQTT_TX_UP_DATA1_OK                         (0xB0FD)
+#define _AT_MQTT_TX_UP_DATA1_ERROR                      (0xB0FE)
+#define _AT_MQTT_TX_UP_DATA1_FINISH                     (0xB0FF)    
     
     
     
@@ -156,10 +170,12 @@ typedef struct
    MODEN_STATES moden_network_connection_state;
    MODEN_STATES moden_mqtt_connection_state;
    uint16_t AT_state;  
+   uint8_t moden_uuid_md5[32];
+   uint8_t lte_4G_data[UART_TX_RX_SIZE];
 
 } MODEN_DATA;
 extern MODEN_DATA _moden;
-extern char buffer[100];
+extern char buffer[UART_TX_RX_SIZE];
 MODEN_STATES readmodenstatue(void);
 void setmoden(MODEN_STATES );
 void init_moden(void);

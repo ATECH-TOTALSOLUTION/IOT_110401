@@ -25,7 +25,7 @@ typedef struct
 
 } TIMER_DATA;
 extern TIMER_DATA _timer;  
-extern uint32_t timer1ms,timer10ms,timer100ms,timer1000ms;
+extern volatile uint32_t timer1ms,timer10ms,timer100ms,timer1000ms;
 void timer_update(void);
 void init_timer(void);
 void timer_main(void);

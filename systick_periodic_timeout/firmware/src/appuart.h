@@ -36,7 +36,10 @@ void  uart_read(uint8_t size,uint8_t* buffer);
 uint8_t platform_uart_read(uint8_t* );
 int32_t platform_uart_write(uint8_t* data, uint16_t len);
 
-extern uint8_t platformrxbuffer[256];
+extern uint8_t txBuffer[UART_TX_RX_SIZE];
+extern uint8_t rxBuffer[UART_TX_RX_SIZE];
+extern uint8_t platformrxbuffer[UART_TX_RX_SIZE];
+extern volatile uint32_t nBytesRead;
 
 void ClearRxatcommandbuffer(void);
 #ifdef __cplusplus  

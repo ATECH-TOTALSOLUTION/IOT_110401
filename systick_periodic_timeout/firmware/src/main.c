@@ -101,6 +101,8 @@ int main ( void )
     
     SYSTICK_TimerCallbackSet(&timeout_handler, (uintptr_t) NULL);
     SYSTICK_TimerStart();
+    
+    SYSTICK_DelayMs(10000);
 
     while ( true )
     {   
@@ -109,9 +111,9 @@ int main ( void )
         
         ClrWDT();
         can_main();
-        timer_main();
+        //timer_main();
         moden_main();
-        iot_main();
+        //iot_main();
         /*
         {
             uint8_t aBuffer[4]={0x55,0xAA,0x55,0xAA};            

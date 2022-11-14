@@ -11,9 +11,9 @@
 #include "moden.h"
 #include "appuart.h"
 #include "app_uart_debug.h"
-uint8_t txBuffer[1024];
-uint8_t rxBuffer[256];
-uint8_t platformrxbuffer[256];
+uint8_t txBuffer[UART_TX_RX_SIZE];
+uint8_t rxBuffer[UART_TX_RX_SIZE];
+uint8_t platformrxbuffer[UART_TX_RX_SIZE];
 ATCOMMAND _atcomd;
 uint8_t atcomdindex=0;
 volatile uint32_t nBytesRead = 0;
@@ -28,22 +28,7 @@ void usartReadEventHandler(SERCOM_USART_EVENT event, uintptr_t context )
         
         SERCOM1_USART_Read((uint8_t*)&rxBuffer[nBytesRead], nBytesAvailable);                          
     }
-    nBytesRead += nBytesAvailable;
-        
-    if(strstr((const char *)rxBuffer,(const char *)"OK\r\n") != 0){
-        _moden_cmd_data.state = COMMAND_OK;
-        memcpy(platformrxbuffer,rxBuffer,strlen((const char *)rxBuffer));
-        memset(rxBuffer,0,sizeof(rxBuffer));     
-        nBytesRead = 0;
-    }
-    else if(strstr((const char *)rxBuffer,(const char *)"ERROR\r\n") != 0){
-        _moden_cmd_data.state = COMMAND_ERROR;
-        memcpy(platformrxbuffer,rxBuffer,strlen((const char *)rxBuffer));
-        memset(rxBuffer,0,sizeof(rxBuffer));     
-        nBytesRead = 0;
-        
-        
-    }
+    nBytesRead += nBytesAvailable;    
 }
 
 void usartWriteEventHandler(SERCOM_USART_EVENT event, uintptr_t context )

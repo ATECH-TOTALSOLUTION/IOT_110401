@@ -131,7 +131,7 @@ build/sam_c21n_xpro/production/_ext/1360937237/appuart.o: \
  ../src/config/sam_c21n_xpro/peripheral/port/plib_port.h \
  ../src/config/sam_c21n_xpro/osal/osal.h \
  ../src/config/sam_c21n_xpro/system/debug/sys_debug.h ../src/app.h \
- ../src/moden.h ../src/appuart.h ../src/app_uart_debug.h
+ ../src/moden.h ../src/app.h ../src/appuart.h ../src/app_uart_debug.h
 
 ../src/config/sam_c21n_xpro/definitions.h:
 
@@ -400,6 +400,8 @@ build/sam_c21n_xpro/production/_ext/1360937237/appuart.o: \
 ../src/app.h:
 
 ../src/moden.h:
+
+../src/app.h:
 
 ../src/appuart.h:
 
