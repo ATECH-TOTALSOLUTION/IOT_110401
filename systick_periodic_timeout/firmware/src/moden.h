@@ -121,25 +121,28 @@ extern "C" {
 //#define _AT_UMQTTNV5_CMD                                (0x0A08)
 //#define _AT_UMQTTNV6_CMD                                (0x0A09)    
 #define _AT_UMQTT21_CMD                                 (0x0A0B)
-    
-
 #define _AT_UMQTTC3_CMD                                 (0x0A0C)
-#define _AT_UMQTTC4_CMD                                 (0x0A0D)
+#define _AT_CERTIFY_DOWN_CMD                            (0x0A0D)
+#define _AT_CERTIFY_PUB_CMD                             (0x0A0E)    
+#define _AT_UMQTTC4_CMD                                 (0x0A0F)
+    
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_SENDING          (0x0AFC)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_OK               (0x0AFD)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_ERROR            (0x0AFE)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_FINISH           (0x0AFF)  
-#define _AT_MQTT_TX_UP_DATA1_CMD                        (0xB000)
-#define _AT_MQTT_TX_UP_DATA1_SENDING                    (0xB0FC)
-#define _AT_MQTT_TX_UP_DATA1_OK                         (0xB0FD)
-#define _AT_MQTT_TX_UP_DATA1_ERROR                      (0xB0FE)
-#define _AT_MQTT_TX_UP_DATA1_FINISH                     (0xB0FF)    
+#define _AT_MQTT_TX_UP_DATA1_CMD                        (0x0B00)
+#define _AT_MQTT_TX_UP_DATA1_SENDING                    (0x0BFC)
+#define _AT_MQTT_TX_UP_DATA1_OK                         (0x0BFD)
+#define _AT_MQTT_TX_UP_DATA1_ERROR                      (0x0BFE)
+#define _AT_MQTT_TX_UP_DATA1_FINISH                     (0x0BFF)  
     
-    
-    
-    
-    
-    
+#define _AT_RAED_LISTEN_CMD                             (0x8000)   
+#define _AT_RAED_ACTION_CMD                             (0x8001)   
+#define _AT_READ_SENDING                                (0x80FC)
+#define _AT_READ_OK                                     (0x80FD)
+#define _AT_READ_ERROR                                  (0x80FE)
+#define _AT_READ_FINISH                                 (0x80FF)  
+   
 typedef enum
 {
     COMMAND_NONE = 0,       //NO send command
@@ -147,14 +150,12 @@ typedef enum
     COMMAND_OK,    
     COMMAND_ERROR,        
 } COMMAND_STATES;
+
 typedef struct
 {
-   volatile COMMAND_STATES state;
-   uint16_t ModenCommand;
-   uint16_t RespondCommand;
-   uint32_t CommandTumeoutTimer;
+   volatile COMMAND_STATES state;   
 } MODEN_COMMAND_DATA;
-extern MODEN_COMMAND_DATA _moden_cmd_data;
+
 typedef enum
 {
     moden_closed = 0, //can't send command
@@ -163,19 +164,24 @@ typedef enum
     moden_connection_initial, //power on need to check moden,network mqtt 
 } MODEN_STATES;
 
-typedef struct
+typedef struct MODEN_DATA
 {
    MODEN_STATES state;
-   MODEN_STATES moden_connection_state;
-   MODEN_STATES moden_network_connection_state;
-   MODEN_STATES moden_mqtt_connection_state;
-   uint16_t AT_state;  
+   uint16_t AT_state;
+   uint16_t AT_READ_state;
    uint8_t moden_uuid_md5[32];
-   uint8_t lte_4G_data[UART_TX_RX_SIZE];
-
+   uint8_t lte_4G_TX_flag;
+   uint8_t lte_4G_TX_data[UART_TX_RX_SIZE];
+   uint8_t lte_4G_RX_flag;
+   uint16_t lte_4G_RX_count;
+   uint8_t lte_4G_RX_data[UART_TX_RX_SIZE];
+   uint8_t lte_4G_TX_error_count;
+   uint8_t lte_4G_RX_error_count;
+   uint8_t lte_4G_reset_initial_flag;
 } MODEN_DATA;
+
+extern MODEN_COMMAND_DATA _moden_cmd_data;
 extern MODEN_DATA _moden;
-extern char buffer[UART_TX_RX_SIZE];
 MODEN_STATES readmodenstatue(void);
 void setmoden(MODEN_STATES );
 void init_moden(void);
@@ -190,4 +196,3 @@ void SendATCOmmand(void);
 #endif
 
 #endif	/* MODEN_H */
-

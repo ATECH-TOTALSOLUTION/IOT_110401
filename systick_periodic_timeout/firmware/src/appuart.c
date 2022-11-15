@@ -11,11 +11,9 @@
 #include "moden.h"
 #include "appuart.h"
 #include "app_uart_debug.h"
-uint8_t txBuffer[UART_TX_RX_SIZE];
+char buffer[UART_TX_RX_SIZE];
 uint8_t rxBuffer[UART_TX_RX_SIZE];
 uint8_t platformrxbuffer[UART_TX_RX_SIZE];
-ATCOMMAND _atcomd;
-uint8_t atcomdindex=0;
 volatile uint32_t nBytesRead = 0;
 void usartReadEventHandler(SERCOM_USART_EVENT event, uintptr_t context )
 {
