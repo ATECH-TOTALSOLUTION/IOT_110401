@@ -6,17 +6,18 @@
 //#include "../iot.h"
 #include "canapp.h"
 #include "appemueeprom.h"
+#include "app_uart_debug.h"
 uint32_t canbussleeptimer=0;
 ecu_init_t  ecu_init;
 /*
  * add following function  in "plib0can0.c"
- * void enable_rxfifo0_interrupt(void){
+ */ void enable_rxfifo0_interrupt(void){
      CAN0_REGS->CAN_IE |= CAN_IE_RF0NE_Msk;
 }
 void enable_rxfifo1_interrupt(void){
      CAN0_REGS->CAN_IE |= CAN_IE_RF1NE_Msk;
 }
- */
+ 
 CAN_ECU_Data_1_TypeDef			CAN_ECU_Data_1;
 CANRXF0 _canrx0buffer[10];
 //CAN_ECU_Data_2_TypeDef			CAN_ECU_Data_2;
@@ -26,9 +27,9 @@ CANRXF0 _canrx0buffer[10];
 CAN_APP_DATA appCAN;
 uint8_t Can0MessageRAM[CAN0_MESSAGE_RAM_CONFIG_SIZE] __attribute__((aligned (32)));
 uint32_t messageID = 0;
-uint8_t  message[8];
+uint8_t  message[10];
 
-uint32_t rx_messageID=0;
+uint32_t rx_messageID=0x18F11FEF;
 uint8_t  rx_message[8];
 uint8_t  rx_messageLength = 0;
 
@@ -52,9 +53,9 @@ float _f_ODOVALUE=0;
 //#define NUM_RX_FIFO0_ELEMENTS 10U
 CAN_RX_FIFO_0_BUFFER rx0_buf[NUM_RX_FIFO0_ELEMENTS];
 uint8_t rx0ReadIndex = 0,rx0Writeindex = 0;
-bool STATUS_RX_PREPARE=true;
-bool STATUS_RX_COMPLETED=false;
-bool STATUS_TX_PREPARE=false;
+volatile bool STATUS_RX_PREPARE=true;
+volatile bool STATUS_RX_COMPLETED=false;
+volatile bool STATUS_TX_PREPARE=false;
 
 void ClearRx0(void){
     memset(rx0_buf,0,(sizeof rx0_buf));
@@ -89,8 +90,11 @@ void APP_CAN_RX_Callback (uintptr_t context)
   clearcanbussleeptimer();
   status = CAN0_ErrorGet ();
   STATUS_RX_COMPLETED=true;
+  
   CAN0_MessageReceive (&rx_messageID, &rx_messageLength, rx_message, 0, CAN_MSG_ATTR_RX_FIFO0, &msgFrameAttr);
   CAN0_InterruptClear (CAN_INTERRUPT_RF0N_MASK);
+  
+  
 } 
 /*
 void OUTPUT_LED2_Toggle(){
@@ -104,9 +108,52 @@ void CheckErrorCount(void){
 
 void can_main(void)
 {
-//  uint8_t  i=0;
+  static uint16_t  i=0;
+#ifdef  AT_CAN_DEBUG_ON  
+    char uart_debug[200];
+#endif
   messageID = 0x01;
   /* Set Message RAM Configuration */
+  
+  if(STATUS_RX_COMPLETED == true){
+    STATUS_RX_COMPLETED = false;      
+  
+    //recieve OK for run
+    if(rx_messageID == 0x18f142ef){
+        SetCANData4((uint8_t*)rx_message);
+        //                 SEGGER_RTT_Write(0, "0x18F142EF\r\n" , 12);
+    }
+    else if(rx_messageID == 0x18f11fef){
+        SetCANData1((uint8_t*)rx_message);
+        //                 SEGGER_RTT_Write(0, "0x18F111EF\r\n" , 12);
+    }
+    else if(rx_messageID == 0x18f120ef){
+        SetCANData2((uint8_t*)rx_message);
+        //                 SEGGER_RTT_Write(0, "0x18F120EF\r\n" , 12);
+    }
+    else if(rx_messageID == 0x18f131ef){
+        SetCANData3((uint8_t*)rx_message);
+        //                SEGGER_RTT_Write(0, "0x18F131EF\r\n" , 12);
+    }
+    else{
+    
+    }  
+    
+    #ifdef  AT_CAN_DEBUG_ON
+        sprintf((char *)uart_debug,"CAN RECIEVE MEG: ID:%08X,  DATA: %02X %02X %02X %02X %02X %02X %02X %02X\r\n"
+                                     ,(unsigned int)rx_messageID,
+                                     rx_message[0],rx_message[1],rx_message[2],rx_message[3],
+                                     rx_message[4],rx_message[5],rx_message[6],rx_message[7]);
+        uart_debug_megssage((uint8_t*)uart_debug, strlen(uart_debug));
+    #endif
+
+    message[0]=(uint8_t) (i);
+    message[1]=(uint8_t)(i>>8);
+    i++;
+    memcpy(&message[2], rx_message, rx_messageLength);
+    
+    CAN0_MessageTransmit (messageID, rx_messageLength+2, message, CAN_MODE_NORMAL, CAN_MSG_ATTR_TX_FIFO_DATA_FRAME);
+  }
     
     switch(_canstate){
         case CAN_Off:
@@ -140,29 +187,7 @@ void can_main(void)
              default:
                 break;
         }
-        
     }
-   
-   /*
-      if(STATUS_RX_COMPLETED==true)
-        {
-
-          STATUS_TX_PREPARE=true;
-        }
-      else if(STATUS_RX_PREPARE==true) // && STATUS_RX_COMPLETED==false
-        {
-          STATUS_RX_PREPARE=false;
- 
-        }
-      else if(STATUS_TX_PREPARE==true)
-        {
-          if(CAN0_MessageTransmit (messageID, rx_messageLength+2, message, CAN_MODE_NORMAL, CAN_MSG_ATTR_TX_FIFO_DATA_FRAME) == false)
-             OUTPUT_LED2_Toggle();
-          else
-            STATUS_TX_PREPARE=false;                  
-        }
-        
-    */
 }
 
 void init_can(void){
@@ -177,16 +202,9 @@ void can_init(void){
    CAN0_MessageRAMConfigSet (Can0MessageRAM);
    CAN0_RxCallbackRegister (APP_CAN_RX_Callback, (uintptr_t)APP_STATE_CAN_RECEIVE, CAN_MSG_ATTR_RX_FIFO0);
    CAN0_TxCallbackRegister (APP_CAN_TX_Callback, (uintptr_t) APP_STATE_CAN_TRANSMIT);
-
-   CAN0_MessageReceive (&rx_messageID, &rx_messageLength, rx_message, 0, CAN_MSG_ATTR_RX_FIFO0, &msgFrameAttr);
    
- //  enable_rxfifo0_interrupt();
- 
-	
+   CAN0_MessageReceive (&rx_messageID, &rx_messageLength, rx_message, 0, CAN_MSG_ATTR_RX_FIFO0, &msgFrameAttr);
 }
-
-
-
 
 void SetCANData1(uint8_t *ptr){
      uint16_t tmp1;
@@ -202,9 +220,14 @@ void SetCANData1(uint8_t *ptr){
      CAN_ECU_Data_1.CAN_MOTO_TEMPTURE =*(ptr+4);
 }
 void SetCANData2(uint8_t *ptr){
+    //uint16_t tmp1;
     CAN_ECU_Data_1.ECU_ERROR_CODE = *(ptr+2);
     CAN_ECU_Data_1.ECU_WARN_CODE= *(ptr+1);
     CAN_ECU_Data_1.carnk_rpm=*(ptr+3);
+    //CAN_ECU_Data_1.torque_sensor_L = *(ptr+4);
+    //CAN_ECU_Data_1.torque_sensor_H = *(ptr+5);
+    //tmp1 = (uint16_t) CAN_ECU_Data_1.torque_sensor_L+((uint16_t)CAN_ECU_Data_1.torque_sensor_H<<8);
+    //CAN_ECU_Data_1._f_torque_sensor = (float)tmp1*0.01;
     CAN_ECU_Data_1.speed=*(ptr+7);
     precalculateODO();
 }
@@ -332,18 +355,30 @@ int fill_crankrpm(char* buf)//(0x18f120ef)
 {
 	int len = 0;
      if( CAN_ECU_Data_1.carnk_rpm>99){
-       len += sprintf(buf+len, "\"T001\":\"%03d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
+       len += sprintf(buf+len, "\"R002\":\"%03d\",",CAN_ECU_Data_1.carnk_rpm);
     }
     else if( CAN_ECU_Data_1.carnk_rpm>9){
-        len += sprintf(buf+len, "\"T001\":\"%02d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
+        len += sprintf(buf+len, "\"R002\":\"%02d\",",CAN_ECU_Data_1.carnk_rpm);
     }
     else{
-        len += sprintf(buf+len, "\"T001\":\"%01d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
+        len += sprintf(buf+len, "\"R002\":\"%01d\",",CAN_ECU_Data_1.carnk_rpm);
     }
 //    len += sprintf(buf+len, "\"R002\":\"%02x\",", CAN_ECU_Data_1.carnk_rpm);
 	return len;
 }
 
+/*
+int fill_torque_sensor(char* buf)//(0x18f120ef) 
+{
+    int len = 0;
+ 
+    len += sprintf(buf+len, "\"C_AVG01\":\"%d.%01d\",", 
+    (int) CAN_ECU_Data_1._f_crank_avgacc, abs((int) ((CAN_ECU_Data_1._f_crank_avgacc - (int) CAN_ECU_Data_1._f_crank_avgacc) * 10)));//10000000)));
+    return len;
+    
+    
+}
+*/
 int fill_mototempture(char* buf)
 {
 	int len = 0;

@@ -130,11 +130,21 @@ extern "C" {
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_OK               (0x0AFD)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_ERROR            (0x0AFE)
 #define _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_FINISH           (0x0AFF)  
-#define _AT_MQTT_TX_UP_DATA1_CMD                        (0x0B00)
-#define _AT_MQTT_TX_UP_DATA1_SENDING                    (0x0BFC)
-#define _AT_MQTT_TX_UP_DATA1_OK                         (0x0BFD)
-#define _AT_MQTT_TX_UP_DATA1_ERROR                      (0x0BFE)
-#define _AT_MQTT_TX_UP_DATA1_FINISH                     (0x0BFF)  
+    
+#define _AT_UGRMC1_CMD                                  (0x0B00)
+#define _AT_UGIND_CMD                                   (0x0B01)
+#define _AT_UGPS1_CMD                                   (0x0B02)
+#define _AT_UGRMC2_CMD                                  (0x0B03)
+#define _AT_GPS_SENDING                                 (0x0BFC)
+#define _AT_GPS_OK                                      (0x0BFD)
+#define _AT_GPS_ERROR                                   (0x0BFE)
+#define _AT_GPS_FINISH                                  (0x0BFF)      
+    
+#define _AT_MQTT_TX_UP_DATA1_CMD                        (0x0C00)
+#define _AT_MQTT_TX_UP_DATA1_SENDING                    (0x0CFC)
+#define _AT_MQTT_TX_UP_DATA1_OK                         (0x0CFD)
+#define _AT_MQTT_TX_UP_DATA1_ERROR                      (0x0CFE)
+#define _AT_MQTT_TX_UP_DATA1_FINISH                     (0x0CFF)  
     
 #define _AT_RAED_LISTEN_CMD                             (0x8000)   
 #define _AT_RAED_ACTION_CMD                             (0x8001)   
@@ -178,6 +188,13 @@ typedef struct MODEN_DATA
    uint8_t lte_4G_TX_error_count;
    uint8_t lte_4G_RX_error_count;
    uint8_t lte_4G_reset_initial_flag;
+   
+   //gps   
+   uint8_t  lte_4G_gps_first_flag;
+   uint8_t  lte_4G_gps_read_flag;
+   uint32_t lte_4G_gps_tick;
+   float    lte_4G_latitude;
+   float    lte_4G_longitude;
 } MODEN_DATA;
 
 extern MODEN_COMMAND_DATA _moden_cmd_data;

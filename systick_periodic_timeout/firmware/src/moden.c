@@ -17,11 +17,13 @@
 #define AT_MQTT_PARA_OPERATION_TIMEOUT_MS                     5000  //5SEC
 #define AT_4G_LTE_LOGIN_TIMEOUT_MS                            5000  //5SEC
 #define AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_TIMEOUT_MS              10000 //10SEC
+#define AT_GPS_TIMEOUT_MS                                     5000  //5SEC
 #define AT_MQTT_TX_UP_DATA1_TIMEOUT_MS                        10000 //10SEC
 #define AT_READ_TIMEOUT_MS                                    10000 //10SEC
 #define AT_RESET_INITIAL_TIMEOUT_MS                           (1000*60) //60SEC  
 
 #define AT_ERROR_RESET_INITIAL_COUNT 3
+#define AT_GPS_READ_TIME                                      (1000*10) //10SEC 
 
 MODEN_COMMAND_DATA _moden_cmd_data;
 MODEN_DATA _moden;
@@ -56,6 +58,12 @@ void init_moden(void){
     _moden.lte_4G_TX_error_count = 0;
     _moden.lte_4G_RX_error_count = 0;
     _moden.lte_4G_reset_initial_flag = 0;
+    
+    _moden.lte_4G_gps_first_flag = 0;
+    _moden.lte_4G_gps_read_flag = 0;
+    _moden.lte_4G_gps_tick = 0;
+    _moden.lte_4G_latitude = 0;
+    _moden.lte_4G_longitude = 0;
     
     memset(buffer,0,sizeof(buffer));    
     memset(rxBuffer,0,sizeof(rxBuffer)); 
@@ -155,9 +163,23 @@ void moden_main(void){
                 
             case _AT_MQTT_TX_UP_DATA1_FINISH:     
                 
-                if((_moden.lte_4G_TX_flag == 1) && (_moden.AT_state == _AT_MQTT_TX_UP_DATA1_FINISH) && (_moden.AT_READ_state == _AT_RAED_LISTEN_CMD)){
-                    _moden.lte_4G_TX_flag = 0;
-                    _moden.AT_state = _AT_MQTT_TX_UP_DATA1_CMD; 
+                if(((_moden.lte_4G_TX_flag == 1) || (_moden.lte_4G_gps_read_flag == 1)) && (_moden.AT_state == _AT_MQTT_TX_UP_DATA1_FINISH) && (_moden.AT_READ_state == _AT_RAED_LISTEN_CMD)){
+                    
+                    if(_moden.lte_4G_TX_flag == 1){
+                        _moden.lte_4G_TX_flag = 0;
+                        _moden.AT_state = _AT_MQTT_TX_UP_DATA1_CMD; 
+                    }
+                    else if(_moden.lte_4G_gps_read_flag == 1){
+                                               
+                        _moden.lte_4G_gps_read_flag = 0;
+                        
+                        if(_moden.lte_4G_gps_first_flag == 0){
+                            _moden.lte_4G_gps_first_flag = 1;
+                            _moden.AT_state = _AT_UGRMC1_CMD;
+                        }
+                        else
+                            _moden.AT_state = _AT_UGRMC2_CMD;
+                    }                   
                 }
                 break;
             default:
@@ -192,16 +214,22 @@ void moden_main(void){
             }
         }
     }
+    
+    //gps
+    if((timer1ms - _moden.lte_4G_gps_tick)> AT_GPS_READ_TIME){        
+        _moden.lte_4G_gps_read_flag = 1;
+        _moden.lte_4G_gps_tick = timer1ms;
+    }
 }
 
 void SendATCOmmand(void){
     static uint32_t at_module_connect_tick,at_4GLTE_link_chk_tick,at_NETWORK_STATUS_tick,at_RELOG_IN_tick,
                     at_4G_LTE_LOGIN_tick,at_MQTT_BIDIR_AUTH_PARA_LOAD_tick,at_MQTT_BIDIR_AUTH_LOGIN_FLOW_tick,
-                    at_MQTT_PARA_OPERATION_tick,at_MQTT_TX_UP_DATA1_tick,at_READ_tick;
+                    at_MQTT_PARA_OPERATION_tick,at_MQTT_TX_UP_DATA1_tick,at_READ_tick,at_GPS_tick;
     static uint16_t at_module_connect_state_bak,at_4GLTE_link_chk_state_bak,at_NETWORK_STATUS_state_bak,
                     at_RELOG_IN_state_bak,at_MQTT_BIDIR_AUTH_PARA_LOAD_state_bak,                
                     at_4G_LTE_LOGIN_state_bak,at_MQTT_BIDIR_AUTH_LOGIN_FLOW_state_bak,
-                    at_MQTT_PARA_OPERATION_state_bak,at_MQTT_TX_UP_DATA1_state_bak,at_RAED_state_bak;
+                    at_MQTT_PARA_OPERATION_state_bak,at_MQTT_TX_UP_DATA1_state_bak,at_RAED_state_bak,at_GPS_state_bak;
     
     #ifdef AT_UART_DEBUG_ON
         char tmp[256];
@@ -1883,6 +1911,173 @@ void SendATCOmmand(void){
             
             memset(platformrxbuffer,0,sizeof(platformrxbuffer));
             break;
+        ////////////////////////////////////////////////////////////////////////    
+        ////////////////////////////////////////////////////////////////////////    
+        case _AT_UGRMC1_CMD:
+            sprintf(buffer,"AT+UGRMC=1\r\n");
+            SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));
+            at_GPS_state_bak = _AT_UGRMC1_CMD;
+            _moden.AT_state = _AT_GPS_SENDING;
+            //_moden_cmd_data.state = COMMAND_SENDING;
+            at_GPS_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
+            break;
+        case _AT_UGIND_CMD:
+            sprintf(buffer,"AT+UGIND=1\r\n");
+            SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));
+            at_GPS_state_bak = _AT_UGIND_CMD;
+            _moden.AT_state = _AT_GPS_SENDING;
+            //_moden_cmd_data.state = COMMAND_SENDING;
+            at_GPS_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
+            break;
+        case _AT_UGPS1_CMD:
+            sprintf(buffer,"AT+UGPS=1,9,67\r\n");
+            SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));
+            at_GPS_state_bak = _AT_UGPS1_CMD;
+            _moden.AT_state = _AT_GPS_SENDING;
+            //_moden_cmd_data.state = COMMAND_SENDING;
+            at_GPS_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
+            break;
+        case _AT_UGRMC2_CMD:
+            sprintf(buffer,"AT+UGRMC?\r\n");
+            SERCOM1_USART_Write((uint8_t*)buffer, strlen(buffer));
+            at_GPS_state_bak = _AT_UGRMC2_CMD;
+            _moden.AT_state = _AT_GPS_SENDING;
+            //_moden_cmd_data.state = COMMAND_SENDING;
+            at_GPS_tick = timer1ms;       
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)buffer, strlen(buffer));
+            #endif
+            break;
+        case _AT_GPS_SENDING:
+            
+            if(strstr((const char *)rxBuffer,(const char *)"OK\r\n") != 0){
+                _moden_cmd_data.state = COMMAND_OK;
+                memcpy(platformrxbuffer,rxBuffer,strlen((const char *)rxBuffer));
+                memset(rxBuffer,0,sizeof(rxBuffer));     
+                nBytesRead = 0;
+            }
+            else if(strstr((const char *)rxBuffer,(const char *)"ERROR\r\n") != 0){
+                _moden_cmd_data.state = COMMAND_ERROR;
+                memcpy(platformrxbuffer,rxBuffer,strlen((const char *)rxBuffer));
+                memset(rxBuffer,0,sizeof(rxBuffer));     
+                nBytesRead = 0;       
+            }    
+            
+            if(_moden_cmd_data.state == COMMAND_OK){
+                _moden.AT_state = _AT_GPS_OK;
+                //_moden_cmd_data.state = COMMAND_NONE;
+            }
+            else if(_moden_cmd_data.state == COMMAND_ERROR){
+                _moden.AT_state = _AT_GPS_ERROR;
+                //_moden_cmd_data.state = COMMAND_NONE;
+            }                
+            //timeout
+            else if((timer1ms-at_GPS_tick)>AT_GPS_TIMEOUT_MS){
+                
+                _moden.lte_4G_TX_error_count++;
+                _moden.AT_state = _NONE_AT_CMD;
+                
+                _moden_cmd_data.state = COMMAND_NONE;
+                
+                #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_GPS  Error_timeout\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+                #endif
+
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            }                
+            break;
+        case _AT_GPS_OK:
+            
+            #ifdef AT_UART_DEBUG_ON
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif
+            
+            if(at_GPS_state_bak != _AT_UGRMC2_CMD)
+                _moden.AT_state = at_GPS_state_bak+1;
+            else{
+                char *adr;
+                
+                adr = strstr((char *)platformrxbuffer,",A,");
+                if(adr != 0){
+                    adr += 3;
+                    _moden.lte_4G_latitude =atof(adr);
+                    
+                    if(strstr((char *)platformrxbuffer,",N,") == 0){
+                        _moden.lte_4G_latitude = -_moden.lte_4G_latitude;
+                        
+                        adr = strstr((char *)platformrxbuffer,",S,");
+                        adr += 3;
+                        _moden.lte_4G_longitude  =atof(adr);
+                        
+                        if(strstr((char *)platformrxbuffer,",E,") == 0)
+                            _moden.lte_4G_longitude = -_moden.lte_4G_longitude;                        
+                    }else{
+                        
+                        adr = strstr((char *)platformrxbuffer,",N,");
+                        adr += 3;
+                        _moden.lte_4G_longitude  =atof(adr);
+                        
+                        if(strstr((char *)platformrxbuffer,",E,") == 0)
+                            _moden.lte_4G_longitude = -_moden.lte_4G_longitude;                          
+                    }
+                    
+                    #ifdef AT_UART_DEBUG_ON
+                        sprintf(tmp,"latitude= %.06f  longitude=%.06f\r\n",_moden.lte_4G_latitude,_moden.lte_4G_longitude);
+                        uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                    #endif
+                }
+                
+                memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+                
+                _moden.AT_state = _AT_GPS_FINISH;
+            }
+            _moden_cmd_data.state = COMMAND_NONE;
+            
+            break;
+        case _AT_GPS_ERROR:
+            
+            _moden.lte_4G_TX_error_count++;
+            _moden.AT_state = _NONE_AT_CMD;
+            
+            _moden_cmd_data.state = COMMAND_NONE;
+            
+            #ifdef AT_UART_DEBUG_ON
+                sprintf(tmp,"_AT_GPS  Error_meg\r\n");       
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                sprintf(tmp,"tx_ERROR:"); 
+                strcat(tmp,buffer);
+                uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
+                uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
+            #endif          
+                
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
+            break;    
+        case _AT_GPS_FINISH:
+            
+            memset(platformrxbuffer,0,sizeof(platformrxbuffer));
+            
+            _moden.AT_state = _AT_MQTT_TX_UP_DATA1_FINISH;
+            
+            break;   
+            
         ////////////////////////////////////////////////////////////////////////
         ////////////////////////////////////////////////////////////////////////
         case _AT_MQTT_TX_UP_DATA1_CMD:
@@ -2140,10 +2335,10 @@ void SendATCOmmand(void){
                     uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
                     uart_debug_megssage((uint8_t*)platformrxbuffer, strlen((char *)platformrxbuffer));
                 #endif            
-
+                
                 memset(platformrxbuffer,0,sizeof(platformrxbuffer));
                 break;            
-            
+                
             case _AT_READ_FINISH:
                 
                 memset(platformrxbuffer,0,sizeof(platformrxbuffer));

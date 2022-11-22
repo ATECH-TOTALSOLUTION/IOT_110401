@@ -83,13 +83,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 22C610AB71995F7E3564825B137A6A17
-- generatedChecksum: 77053E94EDD8221110AD1F1DA184489F
+- generatedChecksum: 851B0ABB4C293DC76C263D8CB7EFB3F6
   logicalPath: config/sam_c21n_xpro/peripheral/can
   name: plib_can0.c
   physicalPath: peripheral/can
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 77053E94EDD8221110AD1F1DA184489F
+  userChecksum: 851B0ABB4C293DC76C263D8CB7EFB3F6
 - generatedChecksum: 9CC944540A0BAB9E9061FEF64453B930
   logicalPath: config/sam_c21n_xpro/peripheral/clock
   name: plib_clock.c
@@ -132,13 +132,13 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 2A63A06250947D97CDA40DB7134FB7C6
-- generatedChecksum: 6FE278D5CA6FC125EB6435E79F1E1A83
+- generatedChecksum: 0CC2380B527149422997387E9062C6F9
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom0_usart.c
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: 6B444F8B12CD7521EA6FCB5D5A9BADE3
+  userChecksum: B483DA7998735A5F18D7965BFC3C6336
 - generatedChecksum: BD349FC17BA9F4AF03AFE76991922402
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom1_usart.c
@@ -706,13 +706,13 @@ files:
   security: NON_SECURE
   type: HEADER
   userChecksum: 40F7F7CFB40C45487F03916F07736862
-- generatedChecksum: 591E96015193C26D19062C3C6FD5756F
+- generatedChecksum: E1FB1EBAA781E884DF041138EE1BF0CD
   logicalPath: config/sam_c21n_xpro/peripheral/can
   name: plib_can0.h
   physicalPath: peripheral/can
   security: NON_SECURE
   type: HEADER
-  userChecksum: 591E96015193C26D19062C3C6FD5756F
+  userChecksum: E1FB1EBAA781E884DF041138EE1BF0CD
 - generatedChecksum: B09A4B5425BC469D730CCB20DC8B9AAF
   logicalPath: config/sam_c21n_xpro/peripheral/can
   name: plib_can_common.h

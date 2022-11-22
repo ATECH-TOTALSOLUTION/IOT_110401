@@ -97,7 +97,7 @@ int main ( void )
     appurat_init();
     appurat_debug_init();
     init_iot();
-    emnueeprom_init();   
+    emnueeprom_init();
     
     SYSTICK_TimerCallbackSet(&timeout_handler, (uintptr_t) NULL);
     SYSTICK_TimerStart();
@@ -111,44 +111,25 @@ int main ( void )
         
         ClrWDT();
         can_main();
-        //timer_main();
+        timer_main();
         moden_main();
         //iot_main();
         /*
         {
-            uint8_t aBuffer[4]={0x55,0xAA,0x55,0xAA};            
-            SEGGER_RTT_Write(0, aBuffer, sizeof(aBuffer));
-            SYSTICK_DelayMs(500);
+            uint8_t message[8];
+            
+            sprintf((char *)message,"55AA");
+            CAN0_MessageTransmit (0x00000055, 4, message, CAN_MODE_NORMAL, CAN_MSG_ATTR_TX_FIFO_DATA_FRAME);
+            SYSTICK_DelayMs(100);
+            //SYSTICK_DelayMs(100);
         }
         */
-        
-         
-
     /* Execution should not come here during normal operation */
 
     
     }
     return ( EXIT_FAILURE );
 }
-/*
-int rtt_printf(const char *fmt,...) 
-{
-  int     n;
-  char    aBuffer[256]; //??????????
-  va_list args;
-
-  va_start (args, fmt);
-  n = vsprintf(aBuffer, sizeof(aBuffer), fmt, args);
-  if (n > (int)sizeof(aBuffer)) {
-    SEGGER_RTT_Write(0, aBuffer, sizeof(aBuffer));
-  } else if (n > 0) {
-    SEGGER_RTT_Write(0, aBuffer, n);
-  }
-  va_end(args);
-  return n;
-}
-*/
-
 /*******************************************************************************
  End of File
 */

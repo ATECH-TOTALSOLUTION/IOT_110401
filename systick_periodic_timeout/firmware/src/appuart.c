@@ -44,8 +44,8 @@ void usartWriteEventHandler(SERCOM_USART_EVENT event, uintptr_t context )
 void appurat_init ( void )
 {
     SERCOM1_USART_WriteCallbackRegister(usartWriteEventHandler, (uintptr_t) NULL);
-    SERCOM1_USART_ReadCallbackRegister(usartReadEventHandler, (uintptr_t) NULL);              
-      
+    SERCOM1_USART_ReadCallbackRegister(usartReadEventHandler, (uintptr_t) NULL);
+    
     /*
     {
         uint8_t tmp[10];

@@ -60,8 +60,8 @@
 // *****************************************************************************
 #define CAN_STD_ID_Msk        0x7FFU
 #define CAN_CALLBACK_TX_INDEX 3U
-#define NUM_RX_FIFOS 2U
-#define NUM_RX_BUFFER_ELEMENTS 10U
+#define NUM_RX_FIFOS 3U
+#define NUM_RX_BUFFER_ELEMENTS 8U
 static CAN_RX_MSG can0RxMsg[NUM_RX_FIFOS][NUM_RX_BUFFER_ELEMENTS];
 static CAN_CALLBACK_OBJ can0CallbackObj[4];
 static CAN_OBJ can0Obj;
@@ -145,6 +145,11 @@ void CAN0_Initialize(void)
 
     /* Set Nominal Bit timing and Prescaler Register */
     CAN0_REGS->CAN_NBTP  = CAN_NBTP_NTSEG2(2UL) | CAN_NBTP_NTSEG1(11UL) | CAN_NBTP_NBRP(11UL) | CAN_NBTP_NSJW(10UL);
+
+    /*lint -e{9048} PC lint incorrectly reports a missing 'U' Suffix */
+    CAN0_REGS->CAN_NDAT1 = CAN_NDAT1_Msk;
+    /*lint -e{9048} PC lint incorrectly reports a missing 'U' Suffix */
+    CAN0_REGS->CAN_NDAT2 = CAN_NDAT2_Msk;
 
 
     /* Global Filter Configuration Register */
@@ -303,6 +308,40 @@ bool CAN0_MessageReceive(uint32_t *id, uint8_t *length, uint8_t *data, uint16_t 
 
     switch (msgAttr)
     {
+        case CAN_MSG_ATTR_RX_BUFFER:
+            for (bufferIndex = 0U; bufferIndex < 8U; bufferIndex++)
+            {
+                if (bufferIndex < 32U)
+                {
+                    if ((can0Obj.rxBufferIndex1 & (1UL << (bufferIndex & 0x1FU))) == 0U)
+                    {
+                        can0Obj.rxBufferIndex1 |= (1UL << (bufferIndex & 0x1FU));
+                        break;
+                    }
+                }
+                else if ((can0Obj.rxBufferIndex2 & (1UL << ((bufferIndex - 32U) & 0x1FU))) == 0U)
+                {
+                    can0Obj.rxBufferIndex2 |= (1UL << ((bufferIndex - 32U) & 0x1FU));
+                    break;
+                }
+                else
+                {
+                    /* Do nothing */
+                }
+            }
+            if(bufferIndex == 8U)
+            {
+                /* The Rx buffers are full */
+                return false;
+            }
+            can0RxMsg[msgAttr][bufferIndex].rxId = id;
+            can0RxMsg[msgAttr][bufferIndex].rxBuffer = data;
+            can0RxMsg[msgAttr][bufferIndex].rxsize = length;
+            can0RxMsg[msgAttr][bufferIndex].timestamp = timestamp;
+            can0RxMsg[msgAttr][bufferIndex].msgFrameAttr = msgFrameAttr;
+            CAN0_REGS->CAN_IE |= CAN_IE_DRXE_Msk;
+            status = true;
+            break;
         case CAN_MSG_ATTR_RX_FIFO0:
             bufferIndex = (uint8_t)((CAN0_REGS->CAN_RXF0S & CAN_RXF0S_F0GI_Msk) >> CAN_RXF0S_F0GI_Pos);
             can0RxMsg[msgAttr][bufferIndex].rxId = id;
@@ -552,14 +591,18 @@ void CAN0_MessageRAMConfigSet(uint8_t *msgRAMConfigBaseAddress)
     can0Obj.msgRAMConfig.rxFIFO0Address = (can_rxf0e_registers_t *)msgRAMConfigBaseAddress;
     offset = CAN0_RX_FIFO0_SIZE;
     /* Receive FIFO 0 Configuration Register */
-    CAN0_REGS->CAN_RXF0C = CAN_RXF0C_F0S(10UL) | CAN_RXF0C_F0WM(0UL) | CAN_RXF0C_F0OM_Msk |
+    CAN0_REGS->CAN_RXF0C = CAN_RXF0C_F0S(8UL) | CAN_RXF0C_F0WM(0UL) | CAN_RXF0C_F0OM_Msk |
             CAN_RXF0C_F0SA((uint32_t)can0Obj.msgRAMConfig.rxFIFO0Address);
 
     can0Obj.msgRAMConfig.rxFIFO1Address = (can_rxf1e_registers_t *)(msgRAMConfigBaseAddress + offset);
     offset += CAN0_RX_FIFO1_SIZE;
     /* Receive FIFO 1 Configuration Register */
-    CAN0_REGS->CAN_RXF1C = CAN_RXF1C_F1S(10UL) | CAN_RXF1C_F1WM(0UL) | CAN_RXF1C_F1OM_Msk |
+    CAN0_REGS->CAN_RXF1C = CAN_RXF1C_F1S(8UL) | CAN_RXF1C_F1WM(0UL) | CAN_RXF1C_F1OM_Msk |
             CAN_RXF1C_F1SA((uint32_t)can0Obj.msgRAMConfig.rxFIFO1Address);
+
+    can0Obj.msgRAMConfig.rxBuffersAddress = (can_rxbe_registers_t *)(msgRAMConfigBaseAddress + offset);
+    offset += CAN0_RX_BUFFER_SIZE;
+    CAN0_REGS->CAN_RXBC = CAN_RXBC_RBSA((uint32_t)can0Obj.msgRAMConfig.rxBuffersAddress);
 
     can0Obj.msgRAMConfig.txBuffersAddress = (can_txbe_registers_t *)(msgRAMConfigBaseAddress + offset);
     offset += CAN0_TX_FIFO_BUFFER_SIZE;
@@ -844,6 +887,7 @@ void CAN0_InterruptHandler(void)
     uint8_t rxgi = 0U;
     uint8_t bufferIndex = 0U;
     bool testCondition = false;
+    can_rxbe_registers_t *rxbeFifo = NULL;
     can_rxf0e_registers_t *rxf0eFifo = NULL;
     can_rxf1e_registers_t *rxf1eFifo = NULL;
     uint32_t ir = CAN0_REGS->CAN_IR;
@@ -951,6 +995,105 @@ void CAN0_InterruptHandler(void)
             {
                 can0CallbackObj[CAN_MSG_ATTR_RX_FIFO1].callback(can0CallbackObj[CAN_MSG_ATTR_RX_FIFO1].context);
             }
+        }
+    }
+    /* New Message in Dedicated Rx Buffer */
+    if ((ir & CAN_IR_DRX_Msk) != 0U)
+    {
+        CAN0_REGS->CAN_IR = CAN_IR_DRX_Msk;
+        CAN0_REGS->CAN_IE &= (~CAN_IE_DRXE_Msk);
+
+        /* Read data from the Rx Buffer */
+        if (CAN0_REGS->CAN_NDAT1 != 0U)
+        {
+            for (rxgi = 0U; rxgi <= 0x1FU; rxgi++)
+            {
+                if ((CAN0_REGS->CAN_NDAT1 & (1UL << rxgi)) == (1UL << rxgi))
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            for (rxgi = 0U; rxgi <= 0x1FU; rxgi++)
+            {
+                if ((CAN0_REGS->CAN_NDAT2 & (1UL << rxgi)) == (1UL << rxgi))
+                {
+                    rxgi = rxgi + 32U;
+                    break;
+                }
+            }
+        }
+        rxbeFifo = (can_rxbe_registers_t *) ((uint8_t *)can0Obj.msgRAMConfig.rxBuffersAddress + ((uint32_t)rxgi * CAN0_RX_BUFFER_ELEMENT_SIZE));
+
+        for (bufferIndex = 0U; bufferIndex < 8U; bufferIndex++)
+        {
+            if (bufferIndex < 32U)
+            {
+                if ((can0Obj.rxBufferIndex1 & (1UL << (bufferIndex & 0x1FU))) == (1UL << (bufferIndex & 0x1FU)))
+                {
+                    can0Obj.rxBufferIndex1 &= ~(1UL << (bufferIndex & 0x1FU));
+                    break;
+                }
+            }
+            else if ((can0Obj.rxBufferIndex2 & (1UL << ((bufferIndex - 32U) & 0x1FU))) == (1UL << ((bufferIndex - 32U) & 0x1FU)))
+            {
+                can0Obj.rxBufferIndex2 &= ~(1UL << ((bufferIndex - 32U) & 0x1FU));
+                break;
+            }
+            else
+            {
+                /* Do nothing */
+            }
+        }
+
+        if(bufferIndex >= NUM_RX_BUFFER_ELEMENTS)
+        {
+            bufferIndex = (uint8_t)(NUM_RX_BUFFER_ELEMENTS - 1U);
+        }
+
+        /* Get received identifier */
+        if ((rxbeFifo->CAN_RXBE_0 & CAN_RXBE_0_XTD_Msk) != 0U)
+        {
+            *can0RxMsg[CAN_MSG_ATTR_RX_BUFFER][bufferIndex].rxId = rxbeFifo->CAN_RXBE_0 & CAN_RXBE_0_ID_Msk;
+        }
+        else
+        {
+            *can0RxMsg[CAN_MSG_ATTR_RX_BUFFER][bufferIndex].rxId = (rxbeFifo->CAN_RXBE_0 >> 18U) & CAN_STD_ID_Msk;
+        }
+
+        /* Check RTR and FDF bits for Remote/Data Frame */
+        testCondition = ((rxbeFifo->CAN_RXBE_0 & CAN_RXBE_0_RTR_Msk) != 0U);
+        testCondition  = ((rxbeFifo->CAN_RXBE_1 & CAN_RXBE_1_FDF_Msk) == 0U) && testCondition;
+        if (testCondition)
+        {
+            *can0RxMsg[CAN_MSG_ATTR_RX_BUFFER][bufferIndex].msgFrameAttr = CAN_MSG_RX_REMOTE_FRAME;
+        }
+        else
+        {
+            *can0RxMsg[CAN_MSG_ATTR_RX_BUFFER][bufferIndex].msgFrameAttr = CAN_MSG_RX_DATA_FRAME;
+        }
+
+        /* Get received data length */
+        length = CANDlcToLengthGet((uint8_t)((rxbeFifo->CAN_RXBE_1 & CAN_RXBE_1_DLC_Msk) >> CAN_RXBE_1_DLC_Pos));
+
+        /* Copy data to user buffer */
+        (void) memcpy(can0RxMsg[CAN_MSG_ATTR_RX_BUFFER][bufferIndex].rxBuffer, (uint8_t *)&rxbeFifo->CAN_RXBE_DATA, length);
+        *can0RxMsg[CAN_MSG_ATTR_RX_BUFFER][bufferIndex].rxsize = length;
+
+        /* Clear new data flag */
+        if (rxgi < 32U)
+        {
+            CAN0_REGS->CAN_NDAT1 = (1UL << rxgi);
+        }
+        else
+        {
+            CAN0_REGS->CAN_NDAT2 = (1UL << (rxgi - 32U));
+        }
+        if (can0CallbackObj[CAN_MSG_ATTR_RX_BUFFER].callback != NULL)
+        {
+            can0CallbackObj[CAN_MSG_ATTR_RX_BUFFER].callback(can0CallbackObj[CAN_MSG_ATTR_RX_BUFFER].context);
         }
     }
 

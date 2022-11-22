@@ -102,4 +102,3 @@ void setnetworkstates(MACHINE_STATES data){
 void setmqttstates(MACHINE_STATES data){
     mcahineData._mqtt = data;
 }
-

@@ -75,9 +75,11 @@
 // *****************************************************************************
 /* CAN0 Message RAM Configuration Size */
 #define CAN0_RX_FIFO0_ELEMENT_SIZE       16U
-#define CAN0_RX_FIFO0_SIZE               160U
+#define CAN0_RX_FIFO0_SIZE               128U
 #define CAN0_RX_FIFO1_ELEMENT_SIZE       16U
-#define CAN0_RX_FIFO1_SIZE               160U
+#define CAN0_RX_FIFO1_SIZE               128U
+#define CAN0_RX_BUFFER_ELEMENT_SIZE      16U
+#define CAN0_RX_BUFFER_SIZE              128U
 #define CAN0_TX_FIFO_BUFFER_ELEMENT_SIZE 16U
 #define CAN0_TX_FIFO_BUFFER_SIZE         80U
 #define CAN0_TX_EVENT_FIFO_SIZE          40U
@@ -86,7 +88,7 @@
 
 /* CAN0_MESSAGE_RAM_CONFIG_SIZE to be used by application or driver
    for allocating buffer from non-cached contiguous memory */
-#define CAN0_MESSAGE_RAM_CONFIG_SIZE     484U
+#define CAN0_MESSAGE_RAM_CONFIG_SIZE     548U
 
 // *****************************************************************************
 // *****************************************************************************

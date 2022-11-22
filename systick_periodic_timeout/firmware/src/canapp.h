@@ -84,6 +84,9 @@ typedef struct {
     uint8_t ECU_WARN_CODE;		//byte 1
     uint8_t ECU_ERROR_CODE;		//byte 2
     uint8_t carnk_rpm;          //byte 3
+    //uint8_t torque_sensor_L;     //byte 4
+    //uint8_t torque_sensor_H;     //byte 5
+    //float   _f_torque_sensor;
     uint8_t speed;              //byte 7
     /************ECU_Data_3 (0x18f131ef)****************/
     uint8_t eecu_dagred;        //byte 1
