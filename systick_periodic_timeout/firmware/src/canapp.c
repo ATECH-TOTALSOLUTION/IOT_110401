@@ -4,10 +4,14 @@
 #include <stdlib.h>                     // Defines EXIT_FAILURE
 #include "definitions.h"                // SYS function prototypes
 //#include "../iot.h"
+#include "apptimer.h"
 #include "canapp.h"
 #include "appemueeprom.h"
 #include "app_uart_debug.h"
-uint32_t canbussleeptimer=0;
+
+#define CAN_RX_DATA_MS     (100) //100ms
+
+uint32_t canbussleeptimer=0,can_rx_tick=0;
 ecu_init_t  ecu_init;
 /*
  * add following function  in "plib0can0.c"
@@ -91,7 +95,7 @@ void APP_CAN_RX_Callback (uintptr_t context)
   status = CAN0_ErrorGet ();
   STATUS_RX_COMPLETED=true;
   
-  CAN0_MessageReceive (&rx_messageID, &rx_messageLength, rx_message, 0, CAN_MSG_ATTR_RX_FIFO0, &msgFrameAttr);
+  //CAN0_MessageReceive (&rx_messageID, &rx_messageLength, rx_message, 0, CAN_MSG_ATTR_RX_FIFO0, &msgFrameAttr);
   CAN0_InterruptClear (CAN_INTERRUPT_RF0N_MASK);
   
   
@@ -108,7 +112,7 @@ void CheckErrorCount(void){
 
 void can_main(void)
 {
-  static uint16_t  i=0;
+  //static uint16_t  i=0;
 #ifdef  AT_CAN_DEBUG_ON  
     char uart_debug[200];
 #endif
@@ -147,13 +151,19 @@ void can_main(void)
         uart_debug_megssage((uint8_t*)uart_debug, strlen(uart_debug));
     #endif
 
-    message[0]=(uint8_t) (i);
-    message[1]=(uint8_t)(i>>8);
-    i++;
-    memcpy(&message[2], rx_message, rx_messageLength);
+    //message[0]=(uint8_t) (i);
+    //message[1]=(uint8_t)(i>>8);
+    //i++;
+    //memcpy(&message[2], rx_message, rx_messageLength);
     
-    CAN0_MessageTransmit (messageID, rx_messageLength+2, message, CAN_MODE_NORMAL, CAN_MSG_ATTR_TX_FIFO_DATA_FRAME);
+    //CAN0_MessageTransmit (messageID, rx_messageLength+2, message, CAN_MODE_NORMAL, CAN_MSG_ATTR_TX_FIFO_DATA_FRAME);
   }
+  
+  if(((timer1ms - can_rx_tick) > CAN_RX_DATA_MS) && (STATUS_RX_COMPLETED == false)){
+      CAN0_MessageReceive (&rx_messageID, &rx_messageLength, rx_message, 0, CAN_MSG_ATTR_RX_FIFO0, &msgFrameAttr);
+      can_rx_tick = timer1ms;
+  }
+  
     
     switch(_canstate){
         case CAN_Off:
@@ -302,7 +312,7 @@ int fill_batvoltage(char* buf)
 	int len = 0;
 //    CAN_ECU_Data_1._f_ecu_batvoltage =34.5;
 	
-	len += sprintf(buf+len, "\"V001\":\"%d.%01d\",", 
+	len += sprintf(buf+len, "'V001':'%d.%01d',", 
     (int) CAN_ECU_Data_1._f_ecu_batvoltage, abs((int) ((CAN_ECU_Data_1._f_ecu_batvoltage - (int) CAN_ECU_Data_1._f_ecu_batvoltage) * 10)));//10000000)));
 	
 	return len;
@@ -315,36 +325,36 @@ int fill_motorpm(char* buf)
    tmp = CAN_ECU_Data_1._d_ecu_motorpm -32768;
     if( tmp>-1){ //>=0
         if( tmp<10){
-           len += sprintf(buf+len, "\"R001\":\"%01d\",",tmp); 
+           len += sprintf(buf+len, "'R001':'%01d',",tmp); 
         }
         else if(tmp<100){
-           len += sprintf(buf+len, "\"R001\":\"%02d\",",tmp); 
+           len += sprintf(buf+len, "'R001':'%02d',",tmp); 
         }
         else if(tmp <1000){
-            len += sprintf(buf+len, "\"R001\":\"%03d\",",tmp);
+            len += sprintf(buf+len, "'R001':'%03d',",tmp);
         }
         else if(tmp<10000){
-            len += sprintf(buf+len, "\"R001\":\"%04d\",",tmp);
+            len += sprintf(buf+len, "'R001':'%04d',",tmp);
         }
         else{
-             len += sprintf(buf+len, "\"R001\":\"%05d\",",tmp);
+             len += sprintf(buf+len, "'R001':'%05d',",tmp);
         }
     }
     else{
         if( tmp>-10){//0~-9
-           len += sprintf(buf+len, "\"R001\":\"%02d\",",tmp); 
+           len += sprintf(buf+len, "'R001':'%02d',",tmp); 
         }
         else if(tmp >-100){ //-10~-99
-           len += sprintf(buf+len, "\"R001\":\"%03d\",",tmp); 
+           len += sprintf(buf+len, "'R001':'%03d',",tmp); 
         }
         else if(tmp>-1000){//-100~-999
-            len += sprintf(buf+len, "\"R001\":\"%04d\",",tmp);
+            len += sprintf(buf+len, "'R001':'%04d',",tmp);
         }
         else if(tmp >-10000){//-1000 
-            len += sprintf(buf+len, "\"R001\":\"%05d\",",tmp);
+            len += sprintf(buf+len, "'R001':'%05d',",tmp);
         }
         else{//-1000 ~ -30000
-             len += sprintf(buf+len, "\"R001\":\"%06d\",",tmp);
+             len += sprintf(buf+len, "'R001':'%06d',",tmp);
         }
     }
    
@@ -355,13 +365,13 @@ int fill_crankrpm(char* buf)//(0x18f120ef)
 {
 	int len = 0;
      if( CAN_ECU_Data_1.carnk_rpm>99){
-       len += sprintf(buf+len, "\"R002\":\"%03d\",",CAN_ECU_Data_1.carnk_rpm);
+       len += sprintf(buf+len, "'R002':'%03d',",CAN_ECU_Data_1.carnk_rpm);
     }
     else if( CAN_ECU_Data_1.carnk_rpm>9){
-        len += sprintf(buf+len, "\"R002\":\"%02d\",",CAN_ECU_Data_1.carnk_rpm);
+        len += sprintf(buf+len, "'R002':'%02d',",CAN_ECU_Data_1.carnk_rpm);
     }
     else{
-        len += sprintf(buf+len, "\"R002\":\"%01d\",",CAN_ECU_Data_1.carnk_rpm);
+        len += sprintf(buf+len, "'R002':'%01d',",CAN_ECU_Data_1.carnk_rpm);
     }
 //    len += sprintf(buf+len, "\"R002\":\"%02x\",", CAN_ECU_Data_1.carnk_rpm);
 	return len;
@@ -384,13 +394,13 @@ int fill_mototempture(char* buf)
 	int len = 0;
 //    CAN_ECU_Data_1.CAN_MOTO_TEMPTURE =0x64;
      if( CAN_ECU_Data_1.CAN_MOTO_TEMPTURE>99){
-       len += sprintf(buf+len, "\"T001\":\"%03d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
+       len += sprintf(buf+len, "'T001':'%03d',",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
     }
     else if( CAN_ECU_Data_1.CAN_MOTO_TEMPTURE>9){
-        len += sprintf(buf+len, "\"T001\":\"%02d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
+        len += sprintf(buf+len, "'T001':'%02d',",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
     }
     else{
-        len += sprintf(buf+len, "\"T001\":\"%01d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
+        len += sprintf(buf+len, "'T001':'%01d',",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
     }
 //    len += sprintf(buf+len, "\"T001\":\"%03d\",",CAN_ECU_Data_1.CAN_MOTO_TEMPTURE);
     return len;
@@ -400,13 +410,13 @@ int fill_speed(char* buf)
 	int len = 0;
  
     if( CAN_ECU_Data_1.speed>99){
-        len += sprintf(buf+len, "\"SP001\":\"%03d\",",CAN_ECU_Data_1.speed);
+        len += sprintf(buf+len, "'SP001':'%03d',",CAN_ECU_Data_1.speed);
     }
     else if( CAN_ECU_Data_1.speed>9){
-        len += sprintf(buf+len, "\"SP001\":\"%02d\",",CAN_ECU_Data_1.speed);
+        len += sprintf(buf+len, "'SP001':'%02d',",CAN_ECU_Data_1.speed);
     }
     else{
-        len += sprintf(buf+len, "\"SP001\":\"%01d\",",CAN_ECU_Data_1.speed);
+        len += sprintf(buf+len, "'SP001':'%01d',",CAN_ECU_Data_1.speed);
     }
 //    len += sprintf(buf+len, "\"SP001\":\"%01d\",",CAN_ECU_Data_1.speed);
     return len;
@@ -478,7 +488,7 @@ int fill_ecuwarncode(char* buf)
 	int len = 0;
 //    CAN_ECU_Data_1.ECU_WARN_CODE =0x64;
 //    len += sprintf(buf+len, "\"EWD000\":\"%02x\",",CAN_ECU_Data_1.ECU_WARN_CODE); //show hex in json
-    len += sprintf(buf+len, "\"EWD000\":\"%0u\",",CAN_ECU_Data_1.ECU_WARN_CODE);
+    len += sprintf(buf+len, "'EWD000':'%0u',",CAN_ECU_Data_1.ECU_WARN_CODE);
     return len;
 }
 int fill_ecuerrorcode(char* buf)
@@ -486,14 +496,14 @@ int fill_ecuerrorcode(char* buf)
 	int len = 0;
  //   CAN_ECU_Data_1.ECU_ERROR_CODE =0x48;
 //    len += sprintf(buf+len, "\"ER000\":\"%02x\",",CAN_ECU_Data_1.ECU_ERROR_CODE); //show hex in json
-      len += sprintf(buf+len, "\"ER000\":\"%0u\",",CAN_ECU_Data_1.ECU_ERROR_CODE);
+      len += sprintf(buf+len, "'ER000':'%0u',",CAN_ECU_Data_1.ECU_ERROR_CODE);
     return len;
 }
 int fill_crankavgpower(char* buf)
 {
 	int len = 0;
  //   CAN_ECU_Data_1._f_crank_avgacc = 650.31;
-   len += sprintf(buf+len, "\"C_AVG01\":\"%d.%01d\",", 
+   len += sprintf(buf+len, "'C_AVG01':'%d.%01d',", 
     (int) CAN_ECU_Data_1._f_crank_avgacc, abs((int) ((CAN_ECU_Data_1._f_crank_avgacc - (int) CAN_ECU_Data_1._f_crank_avgacc) * 10)));//10000000)));
     return len;
 }
@@ -501,7 +511,7 @@ int fill_motoavgpower(char* buf)
 {
 	int len = 0;
  //   CAN_ECU_Data_1._f_moto_avgacc = 123;
-    len += sprintf(buf+len, "\"M_AVG01\":\"%d.%01d\",", 
+    len += sprintf(buf+len, "'M_AVG01':'%d.%01d'", 
     (int) CAN_ECU_Data_1._f_moto_avgacc, abs((int) ((CAN_ECU_Data_1._f_moto_avgacc - (int) CAN_ECU_Data_1._f_moto_avgacc) * 10)));//10000000)));
     return len;
 }

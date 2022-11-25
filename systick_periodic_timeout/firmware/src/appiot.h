@@ -199,6 +199,7 @@ void incmqtttimer(void);
 void iot_main(void);
 void setiotstate(IOT_STATES );
 void updateiotodo(uint32_t );
+void iot_data_pack(uint8_t pack_num);
 
 MACHINE_STATES readmcahinestates(void);
 #ifdef	__cplusplus

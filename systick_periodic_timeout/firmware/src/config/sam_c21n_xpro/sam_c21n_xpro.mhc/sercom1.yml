@@ -165,7 +165,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: '384'}
+        attributes: {value: '512'}
   - type: Integer
     attributes: {id: USART_SAMPLE_COUNT}
     children:
@@ -199,7 +199,7 @@ children:
     - type: Values
       children:
       - type: User
-        attributes: {value: '384'}
+        attributes: {value: '512'}
 - type: Attachments
   children:
   - type: DirectCapability

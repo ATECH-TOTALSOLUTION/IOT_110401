@@ -1,5 +1,5 @@
 build/sam_c21n_xpro/production/_ext/1360937237/appiot.o: ../src/appiot.c \
- ../src/appiot.h ../src/config/sam_c21n_xpro/definitions.h \
+ ../src/config/sam_c21n_xpro/definitions.h \
  ../src/config/sam_c21n_xpro/peripheral/nvmctrl/plib_nvmctrl.h \
  ../src/config/sam_c21n_xpro/device.h \
  ../src/packs/ATSAMC21E18A_DFP/samc21e18a.h \
@@ -131,9 +131,10 @@ build/sam_c21n_xpro/production/_ext/1360937237/appiot.o: ../src/appiot.c \
  ../src/config/sam_c21n_xpro/peripheral/port/plib_port.h \
  ../src/config/sam_c21n_xpro/osal/osal.h \
  ../src/config/sam_c21n_xpro/system/debug/sys_debug.h ../src/app.h \
- ../src/iot_msg.h ../src/appemueeprom.h
-
-../src/appiot.h:
+ ../src/apptimer.h ../src/appiot.h ../src/iot_msg.h ../src/moden.h \
+ ../src/app.h ../src/canapp.h \
+ ../src/config/sam_c21n_xpro/peripheral/can/plib_can_common.h \
+ ../src/appemueeprom.h
 
 ../src/config/sam_c21n_xpro/definitions.h:
 
@@ -401,6 +402,18 @@ build/sam_c21n_xpro/production/_ext/1360937237/appiot.o: ../src/appiot.c \
 
 ../src/app.h:
 
+../src/apptimer.h:
+
+../src/appiot.h:
+
 ../src/iot_msg.h:
+
+../src/moden.h:
+
+../src/app.h:
+
+../src/canapp.h:
+
+../src/config/sam_c21n_xpro/peripheral/can/plib_can_common.h:
 
 ../src/appemueeprom.h:

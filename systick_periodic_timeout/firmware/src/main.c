@@ -113,7 +113,7 @@ int main ( void )
         can_main();
         timer_main();
         moden_main();
-        //iot_main();
+        iot_main();
         /*
         {
             uint8_t message[8];

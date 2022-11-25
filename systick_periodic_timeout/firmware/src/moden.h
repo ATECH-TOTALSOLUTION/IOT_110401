@@ -193,8 +193,8 @@ typedef struct MODEN_DATA
    uint8_t  lte_4G_gps_first_flag;
    uint8_t  lte_4G_gps_read_flag;
    uint32_t lte_4G_gps_tick;
-   float    lte_4G_latitude;
-   float    lte_4G_longitude;
+   uint8_t  lte_4G_latitude[20];
+   uint8_t  lte_4G_longitude[20];
 } MODEN_DATA;
 
 extern MODEN_COMMAND_DATA _moden_cmd_data;

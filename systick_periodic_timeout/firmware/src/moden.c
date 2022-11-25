@@ -62,9 +62,10 @@ void init_moden(void){
     _moden.lte_4G_gps_first_flag = 0;
     _moden.lte_4G_gps_read_flag = 0;
     _moden.lte_4G_gps_tick = 0;
-    _moden.lte_4G_latitude = 0;
-    _moden.lte_4G_longitude = 0;
     
+    memset(_moden.lte_4G_latitude,0,sizeof(_moden.lte_4G_latitude));
+    memset(_moden.lte_4G_longitude,0,sizeof(_moden.lte_4G_longitude));
+        
     memset(buffer,0,sizeof(buffer));    
     memset(rxBuffer,0,sizeof(rxBuffer)); 
     memset(platformrxbuffer,0,sizeof(platformrxbuffer)); 
@@ -156,8 +157,8 @@ void moden_main(void){
             case _AT_MQTT_BIDIR_AUTH_LOGIN_FLOW_FINISH:
                 
                 setmoden(moden_ready);                
-                //_moden.AT_state = _AT_MQTT_TX_UP_DATA1_FINISH;  
-                _moden.AT_state = _AT_MQTT_TX_UP_DATA1_CMD;
+                _moden.AT_state = _AT_MQTT_TX_UP_DATA1_FINISH;  
+                //_moden.AT_state = _AT_MQTT_TX_UP_DATA1_CMD;
                 __NOP(); 
                 break;
                 
@@ -2014,33 +2015,53 @@ void SendATCOmmand(void){
                 _moden.AT_state = at_GPS_state_bak+1;
             else{
                 char *adr;
+                float latitude,longitude,tmp_float;
+                int32_t tmp1_int32; 
                 
                 adr = strstr((char *)platformrxbuffer,",A,");
                 if(adr != 0){
                     adr += 3;
-                    _moden.lte_4G_latitude =atof(adr);
+                    latitude =atof(adr);
                     
                     if(strstr((char *)platformrxbuffer,",N,") == 0){
-                        _moden.lte_4G_latitude = -_moden.lte_4G_latitude;
+                        latitude = -latitude;
                         
                         adr = strstr((char *)platformrxbuffer,",S,");
                         adr += 3;
-                        _moden.lte_4G_longitude  =atof(adr);
+                        longitude  =atof(adr);
                         
                         if(strstr((char *)platformrxbuffer,",E,") == 0)
-                            _moden.lte_4G_longitude = -_moden.lte_4G_longitude;                        
+                            longitude = -longitude;                        
                     }else{
                         
                         adr = strstr((char *)platformrxbuffer,",N,");
                         adr += 3;
-                        _moden.lte_4G_longitude  =atof(adr);
+                        longitude  =atof(adr);
                         
                         if(strstr((char *)platformrxbuffer,",E,") == 0)
-                            _moden.lte_4G_longitude = -_moden.lte_4G_longitude;                          
+                            longitude = -longitude;                          
                     }
                     
+                    memset(_moden.lte_4G_latitude,0,sizeof(_moden.lte_4G_latitude));
+                    memset(_moden.lte_4G_longitude,0,sizeof(_moden.lte_4G_longitude));
+                    
+                    tmp_float = latitude/100;
+                    tmp1_int32 = tmp_float;
+                    tmp_float = (latitude - (tmp1_int32*100));
+                    tmp_float = tmp_float/60;
+                    latitude = tmp1_int32 + tmp_float;
+                    
+                    tmp_float = longitude/100;
+                    tmp1_int32 = tmp_float;
+                    tmp_float = (longitude - (tmp1_int32*100));
+                    tmp_float = tmp_float/60;
+                    longitude = tmp1_int32 + tmp_float;
+                    
+                    sprintf((char *)_moden.lte_4G_latitude,"%.07f",latitude);
+                    sprintf((char *)_moden.lte_4G_longitude,"%.07f",longitude);
+                    
                     #ifdef AT_UART_DEBUG_ON
-                        sprintf(tmp,"latitude= %.06f  longitude=%.06f\r\n",_moden.lte_4G_latitude,_moden.lte_4G_longitude);
+                        sprintf(tmp,"latitude= %s  longitude= %s\r\n",(char *)_moden.lte_4G_latitude,(char *)_moden.lte_4G_longitude);
                         uart_debug_megssage((uint8_t*)tmp, strlen(tmp));
                     #endif
                 }
@@ -2083,8 +2104,17 @@ void SendATCOmmand(void){
         case _AT_MQTT_TX_UP_DATA1_CMD:
             {
                 uint32_t lens;
-                char tmp_lte[100];                
-                                
+                char tmp_lte[100];       
+                memset(buffer,0,sizeof(buffer));
+                sprintf((char *)buffer,(const char *)"AT+UMQTTC=2,0,0,0, \"EMOTO/DEV/");
+                lens = strlen((const char *)buffer);
+                //memcpy(_moden.moden_uuid_md5,"9C490D32BB20833601820E1A7298CE22",sizeof(_moden.moden_uuid_md5));
+                memcpy(&buffer[lens],_moden.moden_uuid_md5,sizeof(_moden.moden_uuid_md5));
+                sprintf((char *)tmp_lte,(const char *)"/UP\",\"");  
+                strcat((char *)buffer,tmp_lte);
+                strcat((char *)buffer,(char *)_moden.lte_4G_TX_data);
+                
+                /*
                 memset(buffer,0,sizeof(buffer));
                 sprintf((char *)buffer,(const char *)"AT+UMQTTC=2,0,0,0, \"EMOTO/DEV/");
                 lens = strlen((const char *)buffer);
@@ -2096,6 +2126,41 @@ void SendATCOmmand(void){
                 strcat((char *)buffer,(char *)_moden.lte_4G_TX_data);
                 sprintf((char *)tmp_lte,(const char *)"}\"\r\n");
                 strcat((char *)buffer,tmp_lte);
+                */
+                /*
+                memset(buffer,0,sizeof(buffer));
+                sprintf((char *)buffer,(const char *)"AT+UMQTTC=2,0,0,0, \"EMOTO/DEV/");
+                lens = strlen((const char *)buffer);
+                memcpy(&buffer[lens],_moden.moden_uuid_md5,sizeof(_moden.moden_uuid_md5));
+                sprintf((char *)tmp_lte,(const char *)"/UP\",\"{'PCBUUID':'"); 
+                strcat((char *)buffer,tmp_lte);
+                lens = strlen((const char *)buffer);
+                memcpy(&buffer[lens],_moden.moden_uuid_md5,sizeof(_moden.moden_uuid_md5));
+                sprintf((char *)tmp_lte,(const char *)"','STIME': '2020-04-08:05:23:00',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'LINKCMD': 'DEVPING',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'BASIC': {"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)" 'MOTOVER': 'V0.1',"); 
+                strcat((char *)buffer,tmp_lte); 
+                sprintf((char *)tmp_lte,(const char *)"'IOTVER': 'V0.1',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'DEVSTU': '00',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'LOCKSTU': '00',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'BKPOW': '5',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'GPSPOS': '25.0798298,121.5721021',"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)" 'MOTOECU':{"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"'SP001':'100'"); 
+                strcat((char *)buffer,tmp_lte);
+                sprintf((char *)tmp_lte,(const char *)"}}}\"\r\n"); 
+                strcat((char *)buffer,tmp_lte);
+                */                
             }
             SERCOM1_USART_Write((uint8_t*)buffer, strlen((char *)buffer));
             at_MQTT_TX_UP_DATA1_state_bak = _AT_MQTT_TX_UP_DATA1_CMD;

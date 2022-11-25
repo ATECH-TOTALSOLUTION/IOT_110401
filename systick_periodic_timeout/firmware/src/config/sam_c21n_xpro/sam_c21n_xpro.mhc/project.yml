@@ -132,20 +132,20 @@ files:
   security: NON_SECURE
   type: SOURCE
   userChecksum: 2A63A06250947D97CDA40DB7134FB7C6
-- generatedChecksum: 0CC2380B527149422997387E9062C6F9
+- generatedChecksum: B9C538CABBC0AF30840B438DD25845AA
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom0_usart.c
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: B483DA7998735A5F18D7965BFC3C6336
-- generatedChecksum: BD349FC17BA9F4AF03AFE76991922402
+  userChecksum: 9BE7A109A1CB07C8046B4D123060D7B0
+- generatedChecksum: 274151B191956E1C76053466086CFEEC
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/usart
   name: plib_sercom1_usart.c
   physicalPath: peripheral/sercom/usart
   security: NON_SECURE
   type: SOURCE
-  userChecksum: D8DE10CECEFD5FD948603D5FDFF32FF7
+  userChecksum: E97223C7015CCD1E8D08E0081D03E7E1
 - generatedChecksum: 5EE81E3249BE17DE79A3EDF65609F0B9
   logicalPath: config/sam_c21n_xpro/peripheral/sercom/i2c_master
   name: plib_sercom2_i2c_master.c
